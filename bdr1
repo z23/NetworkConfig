@@ -1,0 +1,1695 @@
+## Last commit: 2015-06-14 19:05:52 EST by root
+version 12.1X44-D50.2;
+system {
+    host-name bdr1;
+    domain-name z23.ca;
+    time-zone Australia/Sydney;
+    root-authentication {
+    }
+    name-server {
+        10.1.1.1;
+    }
+    login {
+        user brendanh {
+            uid 2001;
+            class super-user;
+            authentication {
+            }
+        }
+        user mmcallister {
+            uid 2002;
+            class super-user;
+            authentication {
+            }
+        }
+        user pro {
+            uid 2000;
+            class super-user;
+            authentication {
+            }
+        }
+    }
+    services {
+        ssh {
+            rate-limit 3;
+        }
+        inactive: dhcp-local-server {
+            dhcpv6 {
+                group default-group {
+                    interface fe-0/0/1.0;
+                }
+            }
+        }
+        dhcp {
+            pool 10.1.2.0/24 {
+                address-range low 10.1.2.200 high 10.1.2.230;
+                name-server {
+                    8.8.8.8;
+                    8.8.4.4;
+                }
+                router {
+                    10.1.2.254;
+                }
+                propagate-settings fe-0/0/2.0;
+            }
+            pool 10.1.1.0/24 {
+                address-range low 10.1.1.200 high 10.1.1.230;
+                name-server {
+                    10.1.1.1;
+                    8.8.8.8;
+                    8.8.4.4;
+                }
+                router {
+                    10.1.1.254;
+                }
+                propagate-settings fe-0/0/1.0;
+            }
+            pool 10.1.15.0/24 {
+                address-range low 10.1.15.200 high 10.1.15.230;
+                domain-name honeypot;
+                name-server {
+                    8.8.8.8;
+                    8.8.4.4;
+                }
+                domain-search {
+                    com;
+                }
+                router {
+                    10.1.15.254;
+                }
+            }
+            pool 10.1.10.0/24 {
+                address-range low 10.1.10.200 high 10.1.10.230;
+                name-server {
+                    8.8.8.8;
+                    8.8.4.4;
+                }
+                router {
+                    10.1.10.254;
+                }
+                propagate-settings fe-0/0/4.10;
+            }
+            pool 10.1.9.0/24 {
+                address-range low 10.1.9.200 high 10.1.9.230;
+                name-server {
+                    10.1.1.1;
+                    8.8.8.8;
+                    8.8.4.4;
+                }
+                router {
+                    10.1.1.254;
+                }
+                propagate-settings fe-0/0/4.9;
+            }
+            pool 10.1.7.0/24 {
+                address-range low 10.1.7.200 high 10.1.7.230;
+                name-server {
+                    8.8.8.8;
+                    8.8.4.4;
+                }
+                router {
+                    10.1.7.254;
+                }
+                propagate-settings fe-0/0/4.7;
+            }
+        }
+    }
+    syslog {
+        archive size 1000k files 3;
+        user * {
+            any emergency;
+        }
+        file messages {
+            any critical;
+            authorization info;
+        }
+        file interactive-commands {
+            interactive-commands any;
+        }
+    }
+    max-configurations-on-flash 49;
+    max-configuration-rollbacks 49;
+    processes {
+        cfm disable;
+        diameter-service {
+            disable;
+        }
+        sbc-configuration-process {
+            disable;
+        }
+        idp-policy disable;
+        utmd disable;
+        802.1x-protocol-daemon disable;
+        application-identification disable;
+        mobile-ip disable;
+        mountd-service disable;
+        nfsd-service disable;
+        r2cp disable;
+        dialer-services {
+            disable;
+        }
+        isdn-signaling {
+            disable;
+        }
+        wireless-lan-service {
+            disable;
+        }
+    }
+    ntp {
+        server 203.0.178.191;
+        server 202.60.94.15;
+        server 121.0.0.41;
+        server 130.102.128.23;
+        server 218.100.43.70;
+        server 10.1.1.1;
+    }
+}
+chassis {
+    aggregated-devices {
+        ethernet {
+            device-count 3;
+        }
+    }
+}
+interfaces {
+    fe-0/0/0 {
+        description "NTD UNI-D #1";
+        mtu 1540;
+        mac 40:b4:f0:5d:0a:03;
+        unit 0 {
+            description "iiNet NBN CLIPS 100/40";
+            family inet {
+                dhcp;
+            }
+        }
+    }
+    gr-0/0/0 {
+        unit 0 {
+            tunnel {
+                source 203.206.134.147;
+                destination 104.167.106.13;
+            }
+            family inet {
+                address 172.23.40.251/31;
+            }
+        }
+        unit 1 {
+            tunnel {
+                source 203.206.134.147;
+                destination 203.59.202.68;
+            }
+            family inet {
+                address 172.23.40.255/31;
+            }
+        }
+        unit 2;
+        unit 3;
+        unit 4;
+        unit 5;
+        unit 6;
+        unit 7;
+        unit 8;
+        unit 9;
+    }
+    ip-0/0/0 {
+        description 6rd.on.iinet.net.au;
+        unit 0 {
+            description "iiNet 6RD";
+            tunnel {
+                source 203.206.134.147;
+                destination 203.0.178.66;
+            }
+            family inet;
+            family inet6 {
+                mtu 1280;
+                address 2001:4479:cbce:8693::1/128;
+            }
+        }
+        unit 1 {
+            tunnel {
+                source 203.206.134.147;
+                destination 104.167.106.13;
+            }
+            family inet {
+                address 172.23.40.253/31;
+            }
+        }
+        unit 2;
+        unit 3;
+        unit 4;
+        unit 5;
+        unit 6;
+        unit 7;
+        unit 8;
+        unit 9;
+    }
+    fe-0/0/1 {
+        description "bdr1:fe-0/0/3 (looped)";
+        unit 0 {
+            description "Host LAN";
+            family inet {
+                filter {
+                    input tpg-policy;
+                }
+                address 10.1.1.254/24 {
+                    primary;
+                    preferred;
+                }
+                address 10.1.1.100/24;
+            }
+            family inet6 {
+                address 2001:4479:cbce:8693:10:1:1:254/112;
+            }
+        }
+    }
+    fe-0/0/2 {
+        description billion-wifi:p1;
+        disable;
+        unit 0 {
+            description "Untrust WIFI SSID:z23-dsl";
+            family inet {
+                filter {
+                    input untrust-wifi-to-tpg-via-tato-untrust;
+                }
+                address 10.1.2.254/24;
+            }
+        }
+    }
+    fe-0/0/3 {
+        description "bdr1:fe-0/0/1 (looped)";
+        flexible-vlan-tagging;
+        native-vlan-id 900;
+        encapsulation vlan-vpls;
+        unit 0 {
+            description "VPLS ingress";
+            encapsulation vlan-vpls;
+            vlan-id 900;
+            family vpls;
+        }
+    }
+    fe-0/0/4 {
+        description wifi1:eth0;
+        vlan-tagging;
+        unit 7 {
+            description management;
+            vlan-id 7;
+            family inet {
+                address 10.1.7.254/24;
+            }
+        }
+        unit 9 {
+            description z23-secure9;
+            vlan-id 9;
+            family inet {
+                address 10.1.9.254/24;
+            }
+        }
+        unit 10 {
+            description z23-secure10;
+            vlan-id 10;
+            family inet {
+                address 10.1.10.254/24;
+            }
+        }
+        unit 15 {
+            description "z23-guest => TPG";
+            vlan-id 15;
+            family inet {
+                filter {
+                    input untrust-wifi-to-tpg-via-tato-untrust;
+                }
+                address 10.1.15.254/24;
+            }
+        }
+    }
+    fe-0/0/5 {
+        description "tato:fe-0/0/3 -> ae2";
+        fastether-options {
+            802.3ad ae2;
+        }
+    }
+    fe-0/0/6 {
+        description srx3:fe-0/0/6;
+        unit 0 {
+            family inet {
+                address 192.168.0.250/31;
+            }
+            family mpls;
+        }
+    }
+    fe-0/0/7 {
+        description srx2:fe-0/0/6;
+        unit 0 {
+            family inet {
+                address 192.168.0.255/31;
+            }
+            family mpls;
+        }
+    }
+    inactive: at-1/0/0 {
+        description "iiNet DSL";
+        mtu 1540;
+        encapsulation ethernet-over-atm;
+        atm-options {
+            vpi 8;
+        }
+        dsl-options {
+            operating-mode auto;
+        }
+        unit 3 {
+            description "iiNet ATM PVC 8.33";
+            encapsulation ether-over-atm-llc;
+            vci 8.33;
+            family inet {
+                dhcp;
+            }
+        }
+        unit 5 {
+            description "iiNet ATM PVC 8.35";
+            encapsulation ppp-over-ether-over-atm-llc;
+            vci 8.35;
+        }
+    }
+    pt-1/0/0 {
+        disable;
+    }
+    ae0 {
+        description Free;
+        disable;
+    }
+    ae1 {
+        description Free;
+        disable;
+    }
+    ae2 {
+        description "2x100M LAG to tato's SRX";
+        vlan-tagging;
+        aggregated-ether-options {
+            link-speed 100m;
+            lacp {
+                active;
+            }
+        }
+        unit 5 {
+            description "Tato LAN";
+            vlan-id 5;
+            family inet {
+                address 192.168.0.248/31;
+            }
+            family inet6 {
+                address 2001:4479:cbce:8693:192:168:0:248/127;
+            }
+        }
+        unit 6 {
+            description "Tato LAN - untrust";
+            vlan-id 6;
+            family inet {
+                address 192.168.0.246/31;
+            }
+            family inet6 {
+                address 2001:4479:cbce:8693:192:168:0:246/127;
+            }
+        }
+    }
+    lo0 {
+        unit 0 {
+            family inet {
+                address 172.16.0.255/32;
+            }
+        }
+    }
+    inactive: pp0 {
+        unit 0 {
+            description "iiNet PPP";
+            ppp-options {
+                pap {
+                    local-name "brendanhiley@iinet.net.au";
+                    passive;
+                }
+            }
+            pppoe-options {
+                underlying-interface at-1/0/0.5;
+                idle-timeout 0;
+                auto-reconnect 5;
+                client;
+            }
+            family inet {
+                negotiate-address;
+            }
+        }
+    }
+    st0 {
+        unit 1 {
+            family inet {
+                mtu 1436;
+                address 169.254.247.22/30;
+            }
+        }
+        unit 2 {
+            family inet {
+                mtu 1436;
+                address 169.254.247.18/30;
+            }
+        }
+    }
+}
+snmp {
+    location "Sydney, Australia";
+    community public {
+        authorization read-only;
+        clients {
+            10.1.1.0/24;
+        }
+    }
+}
+routing-options {
+    interface-routes {
+        rib-group inet tpg;
+    }
+    rib inet6.0 {
+        static {
+            route ::/0 next-hop ip-0/0/0.0;
+        }
+    }
+    static {
+        route 10.10.10.0/25 next-hop 10.1.1.250;
+        inactive: route 37.59.204.199/32 next-hop 192.168.0.249;
+        route 172.23.40.0/24 discard;
+    }
+    generate {
+        route 0.0.0.0/0 {
+            preference 255;
+            discard;
+        }
+    }
+    rib-groups {
+        tpg {
+            import-rib [ inet.0 tpg.inet.0 ];
+        }
+        tato-untrust {
+            import-rib [ inet.0 tato-untrust.inet.0 ];
+        }
+    }
+    autonomous-system 65000;
+}
+protocols {
+    router-advertisement {
+        interface fe-0/0/1.0 {
+            prefix 2001:4479:cbce:8693:10:1:1::/112;
+        }
+    }
+    rsvp {
+        interface fe-0/0/6.0 {
+            link-protection;
+        }
+        interface fe-0/0/7.0 {
+            link-protection;
+        }
+    }
+    mpls {
+        explicit-null;
+        no-cspf;
+        label-switched-path srx1-to-srx3 {
+            to 172.16.0.253;
+            link-protection;
+            fast-reroute;
+            primary via-srx3;
+            secondary via-srx2 {
+                standby;
+            }
+        }
+        path via-srx3 {
+            172.16.0.253 loose;
+        }
+        path via-srx2 {
+            192.168.0.254 strict;
+        }
+        interface fe-0/0/7.0;
+        interface fe-0/0/6.0;
+    }
+    bgp {
+        group internal {
+            type internal;
+            local-address 172.16.0.255;
+            family l2vpn {
+                signaling;
+            }
+            neighbor 172.16.0.254;
+            neighbor 172.16.0.253;
+        }
+        group ebgp {
+            type external;
+            neighbor 169.254.247.21 {
+                hold-time 30;
+                export EXPORT-DEFAULT;
+                peer-as 7224;
+                local-as 64500;
+            }
+            neighbor 169.254.247.17 {
+                hold-time 30;
+                export EXPORT-DEFAULT;
+                peer-as 7224;
+                local-as 64500;
+            }
+        }
+        inactive: group ec2-dn42 {
+            type external;
+            hold-time 30;
+            neighbor 172.23.40.255 {
+                local-address 172.23.40.254;
+                peer-as 65001;
+                local-as 65000;
+            }
+        }
+        group dn42-moshii {
+            type external;
+            import DN42-PEER-IMPORT-MOSHII;
+            export DN42-EXPORT;
+            neighbor 172.23.40.254 {
+                local-address 172.23.40.255;
+                peer-as 4242423911;
+                local-as 4242421023;
+            }
+        }
+        group dn42-yyz-edge {
+            type internal;
+            export DN42-EXPORT;
+            neighbor 172.23.40.250 {
+                local-address 172.23.40.251;
+                peer-as 4242421023;
+                local-as 4242421023;
+            }
+        }
+    }
+    ospf {
+        export [ DEFAULT-ORIGINATE VPC-REDIST ];
+        area 0.0.0.0 {
+            interface fe-0/0/7.0;
+            interface lo0.0;
+            interface fe-0/0/6.0;
+            interface fe-0/0/1.0 {
+                passive;
+            }
+            interface ae2.5;
+            interface fe-0/0/2.0 {
+                passive;
+            }
+            interface fe-0/0/4.7 {
+                passive;
+            }
+            interface fe-0/0/4.10 {
+                passive;
+            }
+            interface fe-0/0/4.9 {
+                passive;
+            }
+        }
+        inactive: area 0.0.0.23 {
+            interface ip-0/0/0.1;
+            interface gr-0/0/0.0;
+        }
+    }
+    ospf3 {
+        export EXPORT-DEFAULT-6;
+        area 0.0.0.0 {
+            interface ae2.5;
+            interface fe-0/0/1.0 {
+                passive;
+            }
+        }
+    }
+    ldp {
+        interface fe-0/0/6.0;
+        interface fe-0/0/7.0;
+    }
+    neighbor-discovery;
+    lldp {
+        interface all;
+    }
+    stp;
+}
+policy-options {
+    policy-statement DEFAULT-ORIGINATE {
+        term 1 {
+            from {
+                route-filter 0.0.0.0/0 exact;
+            }
+            then accept;
+        }
+    }
+    policy-statement DN42-EXPORT {
+        term 1 {
+            from {
+                route-filter 172.22.0.0/15 orlonger;
+            }
+            then accept;
+        }
+        term 2 {
+            then reject;
+        }
+    }
+    policy-statement DN42-PEER-EXPORT {
+        term 1 {
+            from {
+                protocol static;
+                route-filter 172.23.40.0/24 orlonger;
+            }
+            then accept;
+        }
+    }
+    policy-statement DN42-PEER-IMPORT-MOSHII {
+        term 1 {
+            from {
+                route-filter 172.23.251.0/25 orlonger;
+            }
+            then accept;
+        }
+    }
+    policy-statement DN42-REDIST {
+        term 1 {
+            from {
+                protocol static;
+                route-filter 172.23.40.0/24 orlonger;
+            }
+            then accept;
+        }
+    }
+    policy-statement EXPORT-DEFAULT {
+        term default {
+            from {
+                route-filter 0.0.0.0/0 exact;
+            }
+            then accept;
+        }
+        term reject {
+            then reject;
+        }
+    }
+    policy-statement EXPORT-DEFAULT-6 {
+        term 1 {
+            from {
+                protocol static;
+                rib inet6.0;
+                route-filter ::/0 exact;
+            }
+            then accept;
+        }
+    }
+    policy-statement REJECT-ALL {
+        term 1 {
+            then reject;
+        }
+    }
+    policy-statement VPC-REDIST {
+        term 1 {
+            from {
+                protocol bgp;
+                route-filter 172.31.0.0/16 orlonger;
+            }
+            then accept;
+        }
+    }
+}
+class-of-service {
+    interfaces {
+        pp0 {
+            unit 0 {
+                scheduler-map scheduler-map;
+            }
+        }
+    }
+    scheduler-maps {
+        scheduler-map {
+            forwarding-class best-effort scheduler low;
+            forwarding-class expedited-forwarding scheduler strict-high;
+            forwarding-class assured-forwarding scheduler medium-high;
+            forwarding-class network-control scheduler high;
+        }
+    }
+    schedulers {
+        strict-high {
+            priority strict-high;
+        }
+        high {
+            priority high;
+        }
+        medium-high {
+            priority medium-high;
+        }
+        low {
+            priority low;
+        }
+    }
+}
+security {
+    log {
+        mode event;
+    }
+    ike {
+        proposal ike-prop-vpn-faa090e7-1 {
+            authentication-method pre-shared-keys;
+            dh-group group2;
+            authentication-algorithm sha1;
+            encryption-algorithm aes-128-cbc;
+            lifetime-seconds 28800;
+        }
+        proposal ike-prop-vpn-faa090e7-2 {
+            authentication-method pre-shared-keys;
+            dh-group group2;
+            authentication-algorithm sha1;
+            encryption-algorithm aes-128-cbc;
+            lifetime-seconds 28800;
+        }
+        policy ike-pol-vpn-faa090e7-1 {
+            mode main;
+            proposals ike-prop-vpn-faa090e7-1;
+        }
+        policy ike-pol-vpn-faa090e7-2 {
+            mode main;
+            proposals ike-prop-vpn-faa090e7-2;
+        }
+        gateway gw-vpn-faa090e7-1 {
+            ike-policy ike-pol-vpn-faa090e7-1;
+            address 54.240.204.92;
+            dead-peer-detection;
+            external-interface fe-0/0/0.0;
+        }
+        gateway gw-vpn-faa090e7-2 {
+            ike-policy ike-pol-vpn-faa090e7-2;
+            address 54.240.204.91;
+            dead-peer-detection;
+            external-interface fe-0/0/0.0;
+        }
+    }
+    ipsec {
+        proposal ipsec-prop-vpn-faa090e7-1 {
+            protocol esp;
+            authentication-algorithm hmac-sha1-96;
+            encryption-algorithm aes-128-cbc;
+            lifetime-seconds 3600;
+        }
+        proposal ipsec-prop-vpn-faa090e7-2 {
+            protocol esp;
+            authentication-algorithm hmac-sha1-96;
+            encryption-algorithm aes-128-cbc;
+            lifetime-seconds 3600;
+        }
+        policy ipsec-pol-vpn-faa090e7-1 {
+            perfect-forward-secrecy {
+                keys group2;
+            }
+            proposals ipsec-prop-vpn-faa090e7-1;
+        }
+        policy ipsec-pol-vpn-faa090e7-2 {
+            perfect-forward-secrecy {
+                keys group2;
+            }
+            proposals ipsec-prop-vpn-faa090e7-2;
+        }
+        vpn vpn-faa090e7-1 {
+            bind-interface st0.1;
+            df-bit clear;
+            ike {
+                gateway gw-vpn-faa090e7-1;
+                ipsec-policy ipsec-pol-vpn-faa090e7-1;
+            }
+        }
+        vpn vpn-faa090e7-2 {
+            bind-interface st0.2;
+            df-bit clear;
+            ike {
+                gateway gw-vpn-faa090e7-2;
+                ipsec-policy ipsec-pol-vpn-faa090e7-2;
+            }
+        }
+    }
+    address-book {
+        global {
+            address xbox 10.1.1.36/32;
+            address core1-z23-ca 203.59.237.112/32;
+            address esx-z23-ca 203.59.237.115/32;
+            address z23-ca 203.59.237.114/32;
+            address games-dmz 10.1.1.222/32;
+            address nat1-z23-ca 203.59.237.113/32;
+            address box1prd 10.1.1.1/32;
+            address box2prd 10.1.1.2/32;
+            address desktop 10.1.1.200/32;
+            address 192.64.112.72/32 192.64.112.72/32;
+            address 211.166.18.125/32 211.166.18.125/32;
+            address 222.186.34.36/32 222.186.34.36/32;
+            address 210.212.176.45/32 210.212.176.45/32;
+            address 218.87.111.108/32 218.87.111.108/32;
+            address nms 10.1.1.2/32;
+            address tato-network 10.1.3.0/24;
+            address aws-syd 172.31.0.0/16;
+            address tato-vpc 172.31.0.0/16;
+            address vvv.stereotool.com {
+                dns-name vvv.stereotool.com;
+            }
+            address ec2.z23.ca 54.66.183.231/32;
+            address 123.143.79.107/32 123.143.79.107/32;
+            address 10.1.3.0/24 10.1.3.0/24;
+            address-set block-in {
+                address 211.166.18.125/32;
+                address 222.186.34.36/32;
+                address 210.212.176.45/32;
+                address 218.87.111.108/32;
+            }
+        }
+    }
+    alg {
+        dns {
+            doctoring {
+                none;
+            }
+        }
+    }
+    forwarding-options {
+        family {
+            inet6 {
+                mode flow-based;
+            }
+        }
+    }
+    flow {
+        tcp-mss {
+            all-tcp {
+                mss 1220;
+            }
+            ipsec-vpn {
+                mss 1387;
+            }
+        }
+    }
+    screen {
+        ids-option internet-screen {
+            icmp {
+                ip-sweep threshold 1000000;
+                fragment;
+                large;
+                flood threshold 1;
+                ping-death;
+            }
+            ip {
+                bad-option;
+                stream-option;
+                spoofing;
+                source-route-option;
+                strict-source-route-option;
+                unknown-protocol;
+                block-frag;
+                tear-drop;
+            }
+            tcp {
+                syn-fin;
+                fin-no-ack;
+                tcp-no-flag;
+                syn-frag;
+                port-scan threshold 1000000;
+                syn-ack-ack-proxy;
+                syn-flood {
+                    alarm-threshold 1024;
+                    attack-threshold 200;
+                    source-threshold 1024;
+                    destination-threshold 2048;
+                    timeout 20;
+                }
+                land;
+                winnuke;
+                tcp-sweep;
+            }
+            udp {
+                udp-sweep threshold 1000000;
+            }
+            limit-session {
+                destination-ip-based 4;
+            }
+        }
+    }
+    nat {
+        source {
+            pool nat1-z23-ca {
+                address {
+                    203.59.237.113/32;
+                }
+            }
+            pool justapipe-net {
+                address {
+                    203.59.237.112/32;
+                }
+            }
+            pool as1221-net {
+                address {
+                    203.59.237.114/32;
+                }
+            }
+            pool z23-ca {
+                address {
+                    203.59.237.115/32;
+                }
+            }
+            rule-set trust-to-internet {
+                from zone trust;
+                to zone internet;
+                rule justapipe-net {
+                    match {
+                        source-address 10.1.1.1/32;
+                        destination-port 6667;
+                    }
+                    then {
+                        source-nat {
+                            pool {
+                                justapipe-net;
+                            }
+                        }
+                    }
+                }
+                rule bulwark1-irc {
+                    match {
+                        source-address 10.1.1.20/32;
+                        destination-port 6667;
+                    }
+                    then {
+                        source-nat {
+                            pool {
+                                z23-ca;
+                            }
+                        }
+                    }
+                }
+                rule nat {
+                    match {
+                        source-address 0.0.0.0/0;
+                    }
+                    then {
+                        source-nat {
+                            pool {
+                                nat1-z23-ca;
+                            }
+                        }
+                    }
+                }
+            }
+            rule-set untrust-wifi-to-internet {
+                from zone untrust-wifi;
+                to zone internet;
+                rule default {
+                    match {
+                        source-address 10.1.2.0/24;
+                    }
+                    then {
+                        source-nat {
+                            interface;
+                        }
+                    }
+                }
+            }
+            rule-set tato-to-internet {
+                from zone tato;
+                to zone internet;
+                rule tato-default {
+                    match {
+                        source-address 0.0.0.0/0;
+                    }
+                    then {
+                        source-nat {
+                            interface;
+                        }
+                    }
+                }
+            }
+        }
+        destination {
+            pool box1prd {
+                address 10.1.1.1/32;
+            }
+            pool box1prd-ssh {
+                address 10.1.1.1/32 port 22;
+            }
+            pool nms-80 {
+                address 10.1.1.2/32 port 80;
+            }
+            rule-set destination_nat_rules {
+                from zone internet;
+                rule box1prd-ssh {
+                    match {
+                        destination-address 203.59.237.113/32;
+                        destination-port 22;
+                    }
+                    then {
+                        destination-nat pool box1prd;
+                    }
+                }
+                inactive: rule box1prd-ssh-80 {
+                    match {
+                        destination-address 203.59.237.113/32;
+                        destination-port 80;
+                    }
+                    then {
+                        destination-nat pool box1prd-ssh;
+                    }
+                }
+                rule nms-80 {
+                    match {
+                        destination-address 203.59.237.113/32;
+                        destination-port 80;
+                    }
+                    then {
+                        destination-nat pool nms-80;
+                    }
+                }
+            }
+        }
+        static {
+            rule-set internet-static {
+                from zone internet;
+                inactive: rule xbox {
+                    match {
+                        destination-address 203.59.237.115/32;
+                    }
+                    then {
+                        static-nat {
+                            prefix {
+                                10.1.1.36/32;
+                            }
+                        }
+                    }
+                }
+                rule box1prd {
+                    match {
+                        destination-address 203.59.237.115/32;
+                    }
+                    then {
+                        static-nat {
+                            prefix {
+                                10.1.1.1/32;
+                            }
+                        }
+                    }
+                }
+                rule box2prd {
+                    match {
+                        destination-address 203.59.237.114/32;
+                    }
+                    then {
+                        static-nat {
+                            prefix {
+                                10.1.1.2/32;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        proxy-arp {
+            interface fe-0/0/0.0 {
+                address {
+                    203.59.237.115/32;
+                    203.59.237.114/32;
+                    203.59.237.113/32;
+                    203.59.237.112/32;
+                    203.59.94.4/32;
+                }
+            }
+        }
+    }
+    policies {
+        from-zone trust to-zone internet {
+            policy box1prd-permit {
+                match {
+                    source-address box1prd;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+            policy block {
+                match {
+                    source-address any;
+                    destination-address [ 192.64.112.72/32 vvv.stereotool.com ];
+                    application any;
+                }
+                then {
+                    reject;
+                }
+            }
+            policy default-permit {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone internet to-zone trust {
+            policy icmp {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application [ junos-icmp-all junos-icmp6-all ];
+                }
+                then {
+                    permit;
+                }
+            }
+            policy block {
+                match {
+                    source-address [ block-in 123.143.79.107/32 ];
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    deny;
+                    count;
+                }
+            }
+            policy port22 {
+                match {
+                    source-address any-ipv4;
+                    destination-address box1prd;
+                    application junos-ssh;
+                }
+                then {
+                    permit;
+                    log {
+                        session-init;
+                        session-close;
+                    }
+                    count;
+                }
+            }
+            policy port25 {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application junos-smtp;
+                }
+                then {
+                    permit;
+                    log {
+                        session-init;
+                        session-close;
+                    }
+                    count;
+                }
+            }
+            policy port80 {
+                match {
+                    source-address any-ipv4;
+                    destination-address nms;
+                    application junos-http;
+                }
+                then {
+                    permit;
+                }
+            }
+            inactive: policy internet-permit {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+            policy default-deny {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    reject;
+                    log {
+                        session-init;
+                    }
+                    count {
+                        alarm per-minute-threshold 100;
+                    }
+                }
+            }
+        }
+        from-zone trust to-zone trust {
+            policy 1 {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                    count;
+                }
+            }
+        }
+        from-zone untrust-wifi to-zone internet {
+            policy default-permit {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone untrust-wifi to-zone trust {
+            policy 1 {
+                match {
+                    source-address any;
+                    destination-address nms;
+                    application [ junos-http junos-https ];
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone tato to-zone internet {
+            policy default-permit {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone tato to-zone trust {
+            policy 1 {
+                match {
+                    source-address any;
+                    destination-address nms;
+                    application junos-http;
+                }
+                then {
+                    permit;
+                }
+            }
+            policy 2 {
+                match {
+                    source-address 10.1.3.0/24;
+                    destination-address box1prd;
+                    application junos-ssh;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone trust to-zone tato {
+            policy 1 {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone tato to-zone tato {
+            policy VPN {
+                match {
+                    source-address tato-network;
+                    destination-address aws-syd;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone untrust-wifi to-zone tato {
+            policy 1 {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone internet to-zone internet {
+            policy 1 {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone honeypot to-zone tato {
+            policy 1 {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+    }
+    zones {
+        security-zone internet {
+            interfaces {
+                ip-0/0/0.0;
+                fe-0/0/0.0 {
+                    host-inbound-traffic {
+                        system-services {
+                            dhcp;
+                            ping;
+                            traceroute;
+                        }
+                        protocols {
+                            all;
+                        }
+                    }
+                }
+                gr-0/0/0.1 {
+                    host-inbound-traffic {
+                        system-services {
+                            all;
+                        }
+                        protocols {
+                            all;
+                        }
+                    }
+                }
+                ip-0/0/0.1;
+                gr-0/0/0.0 {
+                    host-inbound-traffic {
+                        system-services {
+                            all;
+                        }
+                        protocols {
+                            all;
+                        }
+                    }
+                }
+            }
+        }
+        security-zone trust {
+            host-inbound-traffic {
+                system-services {
+                    all;
+                }
+                protocols {
+                    all;
+                    ndp;
+                }
+            }
+            interfaces {
+                fe-0/0/1.0;
+                fe-0/0/7.0;
+                lo0.0;
+                fe-0/0/6.0;
+                fe-0/0/4.10;
+                fe-0/0/4.7;
+            }
+        }
+        security-zone untrust-wifi {
+            interfaces {
+                fe-0/0/2.0 {
+                    host-inbound-traffic {
+                        system-services {
+                            dhcp;
+                            ping;
+                            traceroute;
+                        }
+                    }
+                }
+                fe-0/0/4.9 {
+                    host-inbound-traffic {
+                        system-services {
+                            dhcp;
+                        }
+                    }
+                }
+            }
+        }
+        security-zone tato {
+            host-inbound-traffic {
+                protocols {
+                    bgp;
+                }
+            }
+            interfaces {
+                ae2.5 {
+                    host-inbound-traffic {
+                        system-services {
+                            ping;
+                            traceroute;
+                            ssh;
+                        }
+                        protocols {
+                            ospf;
+                            ospf3;
+                            ndp;
+                        }
+                    }
+                }
+                st0.1;
+                st0.2;
+            }
+        }
+        security-zone untrust {
+            host-inbound-traffic {
+                system-services {
+                    ike;
+                }
+            }
+        }
+        security-zone honeypot {
+            interfaces {
+                fe-0/0/4.15 {
+                    host-inbound-traffic {
+                        system-services {
+                            dhcp;
+                        }
+                    }
+                }
+            }
+        }
+        security-zone tato-untrust {
+            host-inbound-traffic {
+                system-services {
+                    ping;
+                    traceroute;
+                }
+                protocols {
+                    ospf;
+                }
+            }
+            interfaces {
+                ae2.6;
+            }
+        }
+    }
+}
+firewall {
+    family inet {
+        filter fix-6in4 {
+            term term1 {
+                from {
+                    source-address {
+                        203.59.94.4/32;
+                    }
+                    protocol 41;
+                }
+                then packet-mode;
+            }
+            term term2 {
+                from {
+                    destination-address {
+                        203.59.94.4/32;
+                    }
+                    protocol 41;
+                }
+                then packet-mode;
+            }
+            term term3 {
+                then accept;
+            }
+        }
+        filter untrust-wifi-to-tpg-via-tato-untrust {
+            term dhcp {
+                from {
+                    protocol udp;
+                    source-port [ 67 68 ];
+                    destination-port [ 67 68 ];
+                }
+                then accept;
+            }
+            term 2 {
+                from {
+                    source-address {
+                        10.1.2.0/24;
+                        10.1.15.0/24;
+                    }
+                }
+                then {
+                    routing-instance tpg;
+                }
+            }
+        }
+        filter tpg-policy {
+            term dhcp {
+                from {
+                    protocol udp;
+                    source-port [ 67 68 ];
+                    destination-port [ 67 68 ];
+                }
+                then accept;
+            }
+            term 2 {
+                from {
+                    source-address {
+                        10.1.1.1/32;
+                    }
+                    destination-address {
+                        37.59.204.119/32;
+                    }
+                }
+                then {
+                    routing-instance tpg;
+                }
+            }
+            term default {
+                then accept;
+            }
+        }
+    }
+    filter classifier {
+        term box.z23.ca {
+            from {
+                destination-address {
+                    37.59.204.199/32;
+                }
+            }
+            then {
+                forwarding-class best-effort;
+                accept;
+            }
+        }
+        term dev {
+            from {
+                destination-address {
+                    203.215.5.240/32;
+                }
+            }
+            then {
+                forwarding-class assured-forwarding;
+                accept;
+            }
+        }
+        term outbound-ack {
+            from {
+                tcp-flags ack;
+            }
+            then {
+                forwarding-class expedited-forwarding;
+                accept;
+            }
+        }
+        term icmp {
+            from {
+                protocol icmp;
+            }
+            then forwarding-class network-control;
+        }
+        term default {
+            then {
+                forwarding-class assured-forwarding;
+                accept;
+            }
+        }
+    }
+}
+inactive: access {
+    address-assignment {
+        neighbor-discovery-router-advertisement v6-pool;
+        pool v6-pool {
+            family inet6 {
+                prefix 2001:4479:cbce:8693:10:1:1::/112;
+                range v6-range {
+                    low 2001:4479:cbce:8693:10:1:1:200/112;
+                    high 2001:4479:cbce:8693:10:1:1:230/112;
+                }
+                dhcp-attributes {
+                    dns-server {
+                        2001:4479:cbce:8693:10:1:1:1;
+                    }
+                }
+            }
+        }
+    }
+}
+routing-instances {
+    tato-untrust {
+        instance-type virtual-router;
+        interface fe-0/0/4.15;
+        interface ae2.6;
+        protocols {
+            ospf {
+                area 0.0.0.0 {
+                    interface ae2.6;
+                    interface fe-0/0/4.15 {
+                        passive;
+                    }
+                }
+            }
+        }
+    }
+    tpg {
+        instance-type forwarding;
+        routing-options {
+            static {
+                route 0.0.0.0/0 next-hop 192.168.0.249;
+            }
+        }
+    }
+    vpls1 {
+        instance-type vpls;
+        vlan-id all;
+        interface fe-0/0/3.0;
+        route-distinguisher 172.16.0.255:900;
+        vrf-target target:65000:900;
+        protocols {
+            vpls {
+                site-range 255;
+                no-tunnel-services;
+                site bdr1 {
+                    site-identifier 255;
+                    interface fe-0/0/3.0;
+                }
+                connectivity-type permanent;
+            }
+        }
+    }
+}
+vlans {
+    wifi-trust {
+        vlan-id 10;
+    }
+    wifi-untrust {
+        vlan-id 20;
+    }
+}
