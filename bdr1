@@ -1,4 +1,4 @@
-## Last commit: 2015-06-14 19:05:52 EST by root
+## Last commit: 2015-07-06 20:54:41 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -22,12 +22,6 @@ system {
             authentication {
             }
         }
-        user pro {
-            uid 2000;
-            class super-user;
-            authentication {
-            }
-        }
     }
     services {
         ssh {
@@ -41,7 +35,7 @@ system {
             }
         }
         dhcp {
-            pool 10.1.2.0/24 {
+            inactive: pool 10.1.2.0/24 {
                 address-range low 10.1.2.200 high 10.1.2.230;
                 name-server {
                     8.8.8.8;
@@ -77,6 +71,7 @@ system {
                 router {
                     10.1.15.254;
                 }
+                propagate-settings fe-0/0/4.15;
             }
             pool 10.1.10.0/24 {
                 address-range low 10.1.10.200 high 10.1.10.230;
@@ -97,7 +92,7 @@ system {
                     8.8.4.4;
                 }
                 router {
-                    10.1.1.254;
+                    10.1.9.254;
                 }
                 propagate-settings fe-0/0/4.9;
             }
@@ -263,17 +258,7 @@ interfaces {
         }
     }
     fe-0/0/2 {
-        description billion-wifi:p1;
         disable;
-        unit 0 {
-            description "Untrust WIFI SSID:z23-dsl";
-            family inet {
-                filter {
-                    input untrust-wifi-to-tpg-via-tato-untrust;
-                }
-                address 10.1.2.254/24;
-            }
-        }
     }
     fe-0/0/3 {
         description "bdr1:fe-0/0/1 (looped)";
@@ -315,7 +300,7 @@ interfaces {
             description "z23-guest => TPG";
             vlan-id 15;
             family inet {
-                filter {
+                inactive: filter {
                     input untrust-wifi-to-tpg-via-tato-untrust;
                 }
                 address 10.1.15.254/24;
@@ -1423,28 +1408,10 @@ security {
                 fe-0/0/6.0;
                 fe-0/0/4.10;
                 fe-0/0/4.7;
+                fe-0/0/4.9;
             }
         }
-        security-zone untrust-wifi {
-            interfaces {
-                fe-0/0/2.0 {
-                    host-inbound-traffic {
-                        system-services {
-                            dhcp;
-                            ping;
-                            traceroute;
-                        }
-                    }
-                }
-                fe-0/0/4.9 {
-                    host-inbound-traffic {
-                        system-services {
-                            dhcp;
-                        }
-                    }
-                }
-            }
-        }
+        security-zone untrust-wifi;
         security-zone tato {
             host-inbound-traffic {
                 protocols {
@@ -1483,6 +1450,7 @@ security {
                     host-inbound-traffic {
                         system-services {
                             dhcp;
+                            all;
                         }
                     }
                 }
@@ -1645,15 +1613,11 @@ inactive: access {
 routing-instances {
     tato-untrust {
         instance-type virtual-router;
-        interface fe-0/0/4.15;
         interface ae2.6;
         protocols {
             ospf {
                 area 0.0.0.0 {
                     interface ae2.6;
-                    interface fe-0/0/4.15 {
-                        passive;
-                    }
                 }
             }
         }
