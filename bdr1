@@ -1,4 +1,4 @@
-## Last commit: 2015-07-06 20:54:41 EST by brendanh
+## Last commit: 2015-07-06 22:01:14 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -25,6 +25,7 @@ system {
     }
     services {
         ssh {
+            client-alive-interval 180;
             rate-limit 3;
         }
         inactive: dhcp-local-server {
@@ -300,7 +301,7 @@ interfaces {
             description "z23-guest => TPG";
             vlan-id 15;
             family inet {
-                inactive: filter {
+                filter {
                     input untrust-wifi-to-tpg-via-tato-untrust;
                 }
                 address 10.1.15.254/24;
@@ -1339,7 +1340,7 @@ security {
                 }
             }
         }
-        from-zone honeypot to-zone tato {
+        from-zone honeypot to-zone tato-untrust {
             policy 1 {
                 match {
                     source-address any;
