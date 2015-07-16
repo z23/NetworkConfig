@@ -1,4 +1,4 @@
-## Last commit: 2015-07-12 19:36:46 EST by brendanh
+## Last commit: 2015-07-16 16:49:17 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -192,7 +192,7 @@ interfaces {
         unit 1 {
             tunnel {
                 source 203.206.134.147;
-                destination 203.59.202.68;
+                destination 203.59.179.137;
             }
             family inet {
                 address 172.23.40.255/31;
