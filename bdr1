@@ -1,4 +1,4 @@
-## Last commit: 2015-07-25 18:28:11 EST by brendanh
+## Last commit: 2015-07-26 15:03:34 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -31,7 +31,7 @@ system {
         inactive: dhcp-local-server {
             dhcpv6 {
                 group default-group {
-                    interface fe-0/0/1.0;
+                    interface fe-0/0/1.23;
                 }
             }
         }
@@ -57,7 +57,7 @@ system {
                 router {
                     10.1.1.254;
                 }
-                propagate-settings fe-0/0/1.0;
+                propagate-settings fe-0/0/1.23;
             }
             pool 10.1.15.0/24 {
                 address-range low 10.1.15.200 high 10.1.15.230;
@@ -240,9 +240,11 @@ interfaces {
         unit 9;
     }
     fe-0/0/1 {
-        description "bdr1:fe-0/0/3 (looped)";
-        unit 0 {
+        description core1:ge-0/1/0;
+        vlan-tagging;
+        unit 23 {
             description "Host LAN";
+            vlan-id 23;
             family inet {
                 filter {
                     input tpg-policy;
@@ -480,7 +482,7 @@ routing-options {
 }
 protocols {
     router-advertisement {
-        interface fe-0/0/1.0 {
+        interface fe-0/0/1.23 {
             prefix 2001:4479:cbce:8693:10:1:1::/112;
         }
     }
@@ -578,7 +580,7 @@ protocols {
             interface fe-0/0/7.0;
             interface lo0.0;
             interface fe-0/0/6.0;
-            interface fe-0/0/1.0 {
+            interface fe-0/0/1.23 {
                 passive;
             }
             interface ae2.5;
@@ -604,7 +606,7 @@ protocols {
         export EXPORT-DEFAULT-6;
         area 0.0.0.0 {
             interface ae2.5;
-            interface fe-0/0/1.0 {
+            interface fe-0/0/1.23 {
                 passive;
             }
         }
@@ -1419,7 +1421,7 @@ security {
                 }
             }
             interfaces {
-                fe-0/0/1.0;
+                fe-0/0/1.23;
                 fe-0/0/7.0;
                 lo0.0;
                 fe-0/0/6.0;
