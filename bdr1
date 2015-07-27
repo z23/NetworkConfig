@@ -1,4 +1,4 @@
-## Last commit: 2015-07-26 15:03:34 EST by brendanh
+## Last commit: 2015-07-27 21:04:19 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -314,24 +314,6 @@ interfaces {
         description "tato:fe-0/0/3 -> ae2";
         fastether-options {
             802.3ad ae2;
-        }
-    }
-    fe-0/0/6 {
-        description srx3:fe-0/0/6;
-        unit 0 {
-            family inet {
-                address 192.168.0.250/31;
-            }
-            family mpls;
-        }
-    }
-    fe-0/0/7 {
-        description srx2:fe-0/0/6;
-        unit 0 {
-            family inet {
-                address 192.168.0.255/31;
-            }
-            family mpls;
         }
     }
     inactive: at-1/0/0 {
@@ -1422,9 +1404,7 @@ security {
             }
             interfaces {
                 fe-0/0/1.23;
-                fe-0/0/7.0;
                 lo0.0;
-                fe-0/0/6.0;
                 fe-0/0/4.10;
                 fe-0/0/4.7;
                 fe-0/0/4.9;
