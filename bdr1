@@ -1,4 +1,4 @@
-## Last commit: 2015-07-27 21:04:19 EST by brendanh
+## Last commit: 2015-07-27 21:53:19 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -163,7 +163,7 @@ system {
 chassis {
     aggregated-devices {
         ethernet {
-            device-count 3;
+            device-count 8;
         }
     }
 }
@@ -316,6 +316,12 @@ interfaces {
             802.3ad ae2;
         }
     }
+    fe-0/0/6 {
+        disable;
+    }
+    fe-0/0/7 {
+        disable;
+    }
     inactive: at-1/0/0 {
         description "iiNet DSL";
         mtu 1540;
@@ -380,6 +386,21 @@ interfaces {
                 address 2001:4479:cbce:8693:192:168:0:246/127;
             }
         }
+    }
+    ae3 {
+        disable;
+    }
+    ae4 {
+        disable;
+    }
+    ae5 {
+        disable;
+    }
+    ae6 {
+        disable;
+    }
+    ae7 {
+        disable;
     }
     lo0 {
         unit 0 {
@@ -463,6 +484,10 @@ routing-options {
     autonomous-system 65000;
 }
 protocols {
+    igmp {
+        interface ae2.5;
+        interface ae2.6;
+    }
     router-advertisement {
         interface fe-0/0/1.23 {
             prefix 2001:4479:cbce:8693:10:1:1::/112;
