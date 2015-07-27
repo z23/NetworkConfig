@@ -1,4 +1,4 @@
-## Last commit: 2015-07-27 21:53:19 EST by brendanh
+## Last commit: 2015-07-27 22:52:59 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -258,6 +258,12 @@ interfaces {
             family inet6 {
                 address 2001:4479:cbce:8693:10:1:1:254/112;
             }
+        }
+        unit 33 {
+            vlan-id 33;
+        }
+        unit 43 {
+            vlan-id 43;
         }
     }
     fe-0/0/2 {
@@ -523,7 +529,7 @@ protocols {
         interface fe-0/0/6.0;
     }
     bgp {
-        group internal {
+        inactive: group internal {
             type internal;
             local-address 172.16.0.255;
             family l2vpn {
