@@ -1,4 +1,4 @@
-## Last commit: 2015-07-28 20:00:42 EST by brendanh
+## Last commit: 2015-07-28 20:06:29 EST by root
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -319,7 +319,7 @@ interfaces {
     fe-0/0/5 {
         description cor1:fe-0/0/5;
         fastether-options {
-            802.3ad ae5;
+            802.3ad ae2;
         }
     }
     fe-0/0/6 {
@@ -363,13 +363,7 @@ interfaces {
         description Free;
         disable;
     }
-    ae3 {
-        disable;
-    }
-    ae4 {
-        disable;
-    }
-    ae5 {
+    ae2 {
         description "2x100M LAG to tato's SRX";
         vlan-tagging;
         aggregated-ether-options {
@@ -398,6 +392,15 @@ interfaces {
                 address 2001:4479:cbce:8693:192:168:0:246/127;
             }
         }
+    }
+    ae3 {
+        disable;
+    }
+    ae4 {
+        disable;
+    }
+    ae5 {
+        disable;
     }
     ae6 {
         disable;
@@ -488,8 +491,8 @@ routing-options {
 }
 protocols {
     igmp {
-        interface ae5.5;
-        interface ae5.6;
+        interface ae2.5;
+        interface ae2.6;
     }
     router-advertisement {
         interface fe-0/0/1.23 {
@@ -593,7 +596,7 @@ protocols {
             interface fe-0/0/1.23 {
                 passive;
             }
-            interface ae5.5;
+            interface ae2.5;
             interface fe-0/0/2.0 {
                 passive;
             }
@@ -615,7 +618,7 @@ protocols {
     ospf3 {
         export EXPORT-DEFAULT-6;
         area 0.0.0.0 {
-            interface ae5.5;
+            interface ae2.5;
             interface fe-0/0/1.23 {
                 passive;
             }
@@ -1446,7 +1449,7 @@ security {
                 }
             }
             interfaces {
-                ae5.5 {
+                ae2.5 {
                     host-inbound-traffic {
                         system-services {
                             ping;
@@ -1494,7 +1497,7 @@ security {
                 }
             }
             interfaces {
-                ae5.6;
+                ae2.6;
             }
         }
     }
@@ -1640,11 +1643,11 @@ inactive: access {
 routing-instances {
     tato-untrust {
         instance-type virtual-router;
-        interface ae5.6;
+        interface ae2.6;
         protocols {
             ospf {
                 area 0.0.0.0 {
-                    interface ae5.6;
+                    interface ae2.6;
                 }
             }
         }
