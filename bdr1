@@ -1,4 +1,4 @@
-## Last commit: 2015-07-28 20:06:29 EST by root
+## Last commit: 2015-08-02 13:32:20 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -1135,7 +1135,7 @@ security {
             policy block {
                 match {
                     source-address any;
-                    destination-address [ 192.64.112.72/32 vvv.stereotool.com ];
+                    destination-address 192.64.112.72/32;
                     application any;
                 }
                 then {
