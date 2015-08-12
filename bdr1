@@ -1,4 +1,4 @@
-## Last commit: 2015-08-09 19:33:02 EST by brendanh
+## Last commit: 2015-08-12 16:10:48 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -437,12 +437,14 @@ interfaces {
     }
     st0 {
         unit 1 {
+            description "AWS VPC VPN #1";
             family inet {
                 mtu 1436;
                 address 169.254.247.22/30;
             }
         }
         unit 2 {
+            description "AWS VPC VPN #2";
             family inet {
                 mtu 1436;
                 address 169.254.247.18/30;
