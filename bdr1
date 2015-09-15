@@ -1,4 +1,4 @@
-## Last commit: 2015-08-12 16:10:48 EST by brendanh
+## Last commit: 2015-09-15 21:01:36 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -326,7 +326,12 @@ interfaces {
         disable;
     }
     fe-0/0/7 {
-        disable;
+        description "daves microserver";
+        unit 0 {
+            family inet {
+                address 192.168.1.254/24;
+            }
+        }
     }
     inactive: at-1/0/0 {
         description "iiNet DSL";
@@ -1500,6 +1505,18 @@ security {
             }
             interfaces {
                 ae2.6;
+            }
+        }
+        security-zone dave {
+            interfaces {
+                fe-0/0/7.0 {
+                    host-inbound-traffic {
+                        system-services {
+                            ping;
+                            traceroute;
+                        }
+                    }
+                }
             }
         }
     }
