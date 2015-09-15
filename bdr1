@@ -1,4 +1,4 @@
-## Last commit: 2015-09-15 21:01:36 EST by brendanh
+## Last commit: 2015-09-15 21:17:45 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -1032,6 +1032,22 @@ security {
                     }
                 }
             }
+            rule-set dave-to-internet {
+                from zone dave;
+                to zone internet;
+                rule dave-default {
+                    match {
+                        source-address 192.168.1.0/24;
+                    }
+                    then {
+                        source-nat {
+                            pool {
+                                justapipe-net;
+                            }
+                        }
+                    }
+                }
+            }
         }
         destination {
             pool box1prd {
@@ -1042,6 +1058,9 @@ security {
             }
             pool nms-80 {
                 address 10.1.1.2/32 port 80;
+            }
+            pool dave-microserver {
+                address 192.168.1.1/32;
             }
             rule-set destination_nat_rules {
                 from zone internet;
@@ -1070,6 +1089,51 @@ security {
                     }
                     then {
                         destination-nat pool nms-80;
+                    }
+                }
+                rule dave-25 {
+                    match {
+                        destination-address 203.59.237.112/32;
+                        destination-port 25;
+                    }
+                    then {
+                        destination-nat pool dave-microserver;
+                    }
+                }
+                rule dave-465 {
+                    match {
+                        destination-address 203.59.237.112/32;
+                        destination-port 465;
+                    }
+                    then {
+                        destination-nat pool dave-microserver;
+                    }
+                }
+                rule dave-587 {
+                    match {
+                        destination-address 203.59.237.112/32;
+                        destination-port 587;
+                    }
+                    then {
+                        destination-nat pool dave-microserver;
+                    }
+                }
+                rule dave-993 {
+                    match {
+                        destination-address 203.59.237.112/32;
+                        destination-port 993;
+                    }
+                    then {
+                        destination-nat pool dave-microserver;
+                    }
+                }
+                rule dave-122 {
+                    match {
+                        destination-address 203.59.237.112/32;
+                        destination-port 122;
+                    }
+                    then {
+                        destination-nat pool dave-microserver;
                     }
                 }
             }
@@ -1380,6 +1444,18 @@ security {
         }
         from-zone honeypot to-zone tato-untrust {
             policy 1 {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone dave to-zone internet {
+            policy dave-default {
                 match {
                     source-address any;
                     destination-address any;
