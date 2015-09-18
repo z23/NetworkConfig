@@ -1,4 +1,4 @@
-## Last commit: 2015-09-15 21:22:44 EST by brendanh
+## Last commit: 2015-09-18 22:03:39 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -309,7 +309,7 @@ interfaces {
             description "z23-guest => TPG";
             vlan-id 15;
             family inet {
-                filter {
+                inactive: filter {
                     input untrust-wifi-to-tpg-via-tato-untrust;
                 }
                 address 10.1.15.254/24;
@@ -1038,7 +1038,7 @@ security {
                 to zone internet;
                 rule dave-default {
                     match {
-                        source-address 192.168.1.0/24;
+                        source-address [ 192.168.1.0/24 10.1.15.0/24 ];
                     }
                     then {
                         source-nat {
@@ -1479,6 +1479,18 @@ security {
                 }
             }
         }
+        from-zone dave to-zone dave {
+            policy dave-dave {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
     }
     zones {
         security-zone internet {
@@ -1572,7 +1584,7 @@ security {
         }
         security-zone honeypot {
             interfaces {
-                fe-0/0/4.15 {
+                inactive: fe-0/0/4.15 {
                     host-inbound-traffic {
                         system-services {
                             dhcp;
@@ -1601,6 +1613,15 @@ security {
                 fe-0/0/7.0 {
                     host-inbound-traffic {
                         system-services {
+                            ping;
+                            traceroute;
+                        }
+                    }
+                }
+                fe-0/0/4.15 {
+                    host-inbound-traffic {
+                        system-services {
+                            dhcp;
                             ping;
                             traceroute;
                         }
