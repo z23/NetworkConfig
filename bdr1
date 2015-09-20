@@ -1,4 +1,4 @@
-## Last commit: 2015-09-18 22:03:39 EST by brendanh
+## Last commit: 2015-09-20 21:04:56 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -12,6 +12,12 @@ system {
     login {
         user brendanh {
             uid 2001;
+            class super-user;
+            authentication {
+            }
+        }
+        user dutcheh {
+            uid 2003;
             class super-user;
             authentication {
             }
@@ -1491,6 +1497,18 @@ security {
                 }
             }
         }
+        from-zone dave to-zone trust {
+            policy observium {
+                match {
+                    source-address any;
+                    destination-address nms;
+                    application junos-http;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
     }
     zones {
         security-zone internet {
@@ -1615,6 +1633,7 @@ security {
                         system-services {
                             ping;
                             traceroute;
+                            ssh;
                         }
                     }
                 }
@@ -1624,6 +1643,7 @@ security {
                             dhcp;
                             ping;
                             traceroute;
+                            ssh;
                         }
                     }
                 }
