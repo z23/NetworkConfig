@@ -1,4 +1,4 @@
-## Last commit: 2015-09-20 21:04:56 EST by brendanh
+## Last commit: 2015-09-20 21:49:32 EST by dutcheh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -335,7 +335,16 @@ interfaces {
         description "daves microserver";
         unit 0 {
             family inet {
-                address 192.168.1.254/24;
+                address 192.168.1.254/24 {
+                    vrrp-group 1 {
+                        virtual-address 192.168.1.7;
+                        priority 110;
+                        preempt;
+                        track {
+                            route 0.0.0.0/0 routing-instance default priority-cost 50;
+                        }
+                    }
+                }
             }
         }
     }
