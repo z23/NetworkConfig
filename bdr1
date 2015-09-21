@@ -1,4 +1,4 @@
-## Last commit: 2015-09-20 22:30:21 EST by brendanh
+## Last commit: 2015-09-22 00:04:21 EST by dutcheh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -329,23 +329,15 @@ interfaces {
         }
     }
     fe-0/0/6 {
-        disable;
+        description "ae3 - Dutcheh - ge-0/0/8";
+        fastether-options {
+            802.3ad ae3;
+        }
     }
     fe-0/0/7 {
-        description "daves microserver";
-        unit 0 {
-            family inet {
-                address 192.168.1.254/24 {
-                    vrrp-group 1 {
-                        virtual-address 192.168.1.7;
-                        priority 110;
-                        preempt;
-                        track {
-                            route 0.0.0.0/0 routing-instance default priority-cost 50;
-                        }
-                    }
-                }
-            }
+        description "ae3 - Dutcheh - ge-0/0/9";
+        fastether-options {
+            802.3ad ae3;
         }
     }
     inactive: at-1/0/0 {
@@ -414,7 +406,27 @@ interfaces {
         }
     }
     ae3 {
-        disable;
+        description "daves microserver";
+        aggregated-ether-options {
+            minimum-links 1;
+            lacp {
+                active;
+            }
+        }
+        unit 0 {
+            family inet {
+                address 192.168.1.254/24 {
+                    vrrp-group 1 {
+                        virtual-address 192.168.1.7;
+                        priority 110;
+                        preempt;
+                        track {
+                            route 0.0.0.0/0 routing-instance default priority-cost 50;
+                        }
+                    }
+                }
+            }
+        }
     }
     ae4 {
         disable;
@@ -494,6 +506,7 @@ routing-options {
         route 10.10.10.0/25 next-hop 10.1.1.250;
         inactive: route 37.59.204.199/32 next-hop 192.168.0.249;
         route 172.23.40.0/24 discard;
+        route 203.0.178.32/32 next-hop 192.168.0.249;
     }
     generate {
         route 0.0.0.0/0 {
@@ -525,9 +538,6 @@ protocols {
         interface fe-0/0/6.0 {
             link-protection;
         }
-        interface fe-0/0/7.0 {
-            link-protection;
-        }
     }
     mpls {
         explicit-null;
@@ -547,7 +557,6 @@ protocols {
         path via-srx2 {
             192.168.0.254 strict;
         }
-        interface fe-0/0/7.0;
         interface fe-0/0/6.0;
     }
     bgp {
@@ -612,7 +621,6 @@ protocols {
     ospf {
         export [ DEFAULT-ORIGINATE VPC-REDIST ];
         area 0.0.0.0 {
-            interface fe-0/0/7.0;
             interface lo0.0;
             interface fe-0/0/6.0;
             interface fe-0/0/1.23 {
@@ -631,6 +639,7 @@ protocols {
             interface fe-0/0/4.9 {
                 passive;
             }
+            interface ae3.0;
         }
         inactive: area 0.0.0.23 {
             interface ip-0/0/0.1;
@@ -648,7 +657,6 @@ protocols {
     }
     ldp {
         interface fe-0/0/6.0;
-        interface fe-0/0/7.0;
     }
     neighbor-discovery;
     lldp {
@@ -1654,7 +1662,7 @@ security {
         }
         security-zone dave {
             interfaces {
-                fe-0/0/7.0 {
+                ae3.0 {
                     host-inbound-traffic {
                         system-services {
                             ping;
