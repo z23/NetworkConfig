@@ -1,4 +1,4 @@
-## Last commit: 2015-09-22 00:04:21 EST by dutcheh
+## Last commit: 2015-09-22 00:25:40 EST by dutcheh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -484,6 +484,14 @@ interfaces {
         }
     }
 }
+forwarding-options {
+    hash-key {
+        family inet {
+            layer-3;
+            layer-4;
+        }
+    }
+}
 snmp {
     location "Sydney, Australia";
     community public {
@@ -506,7 +514,7 @@ routing-options {
         route 10.10.10.0/25 next-hop 10.1.1.250;
         inactive: route 37.59.204.199/32 next-hop 192.168.0.249;
         route 172.23.40.0/24 discard;
-        route 203.0.178.32/32 next-hop 192.168.0.249;
+        route 150.101.135.3/32 next-hop 192.168.0.249;
     }
     generate {
         route 0.0.0.0/0 {
@@ -1537,6 +1545,18 @@ security {
                     source-address any;
                     destination-address nms;
                     application junos-http;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
+        from-zone dave to-zone tato {
+            policy dave-default {
+                match {
+                    source-address any;
+                    destination-address any;
+                    application any;
                 }
                 then {
                     permit;
