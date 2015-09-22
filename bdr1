@@ -1,4 +1,4 @@
-## Last commit: 2015-09-22 21:56:30 EST by brendanh
+## Last commit: 2015-09-22 22:31:53 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -623,6 +623,7 @@ protocols {
         group peering-fabric {
             type external;
             local-address 172.20.0.254;
+            export [ AWS-VPC-DX DEFAULT-ORIGINATE REJECT-ALL ];
             local-as 65254;
             neighbor 172.20.0.253 {
                 import [ IMPORT-TPG IMPORT-TRANSIT ];
@@ -698,6 +699,12 @@ protocols {
     stp;
 }
 policy-options {
+    policy-statement AWS-VPC-DX {
+        term 1 {
+            from as-path AWS-DX;
+            then accept;
+        }
+    }
     policy-statement DEFAULT-ORIGINATE {
         term 1 {
             from {
@@ -818,6 +825,7 @@ policy-options {
             then accept;
         }
     }
+    as-path AWS-DX .*7224.*;
 }
 class-of-service {
     interfaces {
