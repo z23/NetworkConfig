@@ -1,4 +1,4 @@
-## Last commit: 2015-09-22 22:31:53 EST by brendanh
+## Last commit: 2015-09-22 23:00:49 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -646,6 +646,32 @@ protocols {
                 peer-as 65003;
             }
         }
+        group peering-fabric-v6 {
+            type external;
+            local-address fd00::254;
+            export EXPORT-DEFAULT-6;
+            local-as 65254;
+            neighbor fd00::253 {
+                import [ IMPORT-TPG-V6 IMPORT-TRANSIT-V6 ];
+                peer-as 65253;
+            }
+            neighbor fd00::252 {
+                import [ IMPORT-NODE-V6 IMPORT-TRANSIT-V6 ];
+                peer-as 65252;
+            }
+            neighbor fd00::1 {
+                import [ IMPORT-Z23-V6 IMPORT-HOSTLAN-V6 ];
+                peer-as 65001;
+            }
+            neighbor fd00::2 {
+                import [ IMPORT-TATO-V6 IMPORT-HOSTLAN-V6 ];
+                peer-as 65002;
+            }
+            neighbor fd00::3 {
+                import [ IMPORT-DAVE-V6 IMPORT-HOSTLAN-V6 ];
+                peer-as 65003;
+            }
+        }
     }
     isis {
         interface fe-0/0/6.0 {
@@ -776,6 +802,11 @@ policy-options {
             then next policy;
         }
     }
+    policy-statement IMPORT-DAVE-V6 {
+        term 1 {
+            then next policy;
+        }
+    }
     policy-statement IMPORT-HOSTLAN {
         term 1 {
             from {
@@ -783,7 +814,18 @@ policy-options {
             }
         }
     }
+    policy-statement IMPORT-HOSTLAN-V6 {
+        term 1 {
+            from family inet6;
+            then accept;
+        }
+    }
     policy-statement IMPORT-NODE {
+        term 1 {
+            then next policy;
+        }
+    }
+    policy-statement IMPORT-NODE-V6 {
         term 1 {
             then next policy;
         }
@@ -793,7 +835,17 @@ policy-options {
             then next policy;
         }
     }
+    policy-statement IMPORT-TATO-V6 {
+        term 1 {
+            then reject;
+        }
+    }
     policy-statement IMPORT-TPG {
+        term 1 {
+            then next policy;
+        }
+    }
+    policy-statement IMPORT-TPG-V6 {
         term 1 {
             then next policy;
         }
@@ -806,7 +858,20 @@ policy-options {
             then accept;
         }
     }
+    policy-statement IMPORT-TRANSIT-V6 {
+        term 1 {
+            from {
+                route-filter ::/0 exact;
+            }
+            then accept;
+        }
+    }
     policy-statement IMPORT-Z23 {
+        term 1 {
+            then next policy;
+        }
+    }
+    policy-statement IMPORT-Z23-V6 {
         term 1 {
             then next policy;
         }
