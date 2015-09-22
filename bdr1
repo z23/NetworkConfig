@@ -1,4 +1,4 @@
-## Last commit: 2015-09-22 00:25:40 EST by dutcheh
+## Last commit: 2015-09-22 21:56:30 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -620,6 +620,31 @@ protocols {
                 local-as 4242421023;
             }
         }
+        group peering-fabric {
+            type external;
+            local-address 172.20.0.254;
+            local-as 65254;
+            neighbor 172.20.0.253 {
+                import [ IMPORT-TPG IMPORT-TRANSIT ];
+                peer-as 65253;
+            }
+            neighbor 172.20.0.252 {
+                import [ IMPORT-NODE IMPORT-TRANSIT ];
+                peer-as 65252;
+            }
+            neighbor 172.20.0.1 {
+                import [ IMPORT-Z23 IMPORT-HOSTLAN ];
+                peer-as 65001;
+            }
+            neighbor 172.20.0.2 {
+                import [ IMPORT-TATO IMPORT-HOSTLAN ];
+                peer-as 65002;
+            }
+            neighbor 172.20.0.3 {
+                import [ IMPORT-DAVE IMPORT-HOSTLAN ];
+                peer-as 65003;
+            }
+        }
     }
     isis {
         interface fe-0/0/6.0 {
@@ -737,6 +762,46 @@ policy-options {
                 route-filter ::/0 exact;
             }
             then accept;
+        }
+    }
+    policy-statement IMPORT-DAVE {
+        term 1 {
+            then next policy;
+        }
+    }
+    policy-statement IMPORT-HOSTLAN {
+        term 1 {
+            from {
+                route-filter 0.0.0.0/0 prefix-length-range /16-/24;
+            }
+        }
+    }
+    policy-statement IMPORT-NODE {
+        term 1 {
+            then next policy;
+        }
+    }
+    policy-statement IMPORT-TATO {
+        term 1 {
+            then next policy;
+        }
+    }
+    policy-statement IMPORT-TPG {
+        term 1 {
+            then next policy;
+        }
+    }
+    policy-statement IMPORT-TRANSIT {
+        term 1 {
+            from {
+                route-filter 0.0.0.0/0 exact;
+            }
+            then accept;
+        }
+    }
+    policy-statement IMPORT-Z23 {
+        term 1 {
+            then next policy;
         }
     }
     policy-statement REJECT-ALL {
