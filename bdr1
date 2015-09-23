@@ -1,4 +1,4 @@
-## Last commit: 2015-09-23 22:32:25 EST by brendanh
+## Last commit: 2015-09-24 00:29:41 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -273,27 +273,15 @@ interfaces {
         }
     }
     fe-0/0/2 {
-        vlan-tagging;
-        unit 708 {
-            vlan-id 708;
-            family inet {
-                address 172.20.0.254/24;
-            }
-            family inet6 {
-                address fd00::254/64;
-            }
+        description "peering-fabric #1";
+        fastether-options {
+            802.3ad ae0;
         }
     }
     fe-0/0/3 {
-        description "bdr1:fe-0/0/1 (looped)";
-        flexible-vlan-tagging;
-        native-vlan-id 900;
-        encapsulation vlan-vpls;
-        unit 0 {
-            description "VPLS ingress";
-            encapsulation vlan-vpls;
-            vlan-id 900;
-            family vpls;
+        description "peering-fabric #2";
+        fastether-options {
+            802.3ad ae0;
         }
     }
     fe-0/0/4 {
@@ -377,8 +365,23 @@ interfaces {
         disable;
     }
     ae0 {
-        description Free;
-        disable;
+        description peering-fabric;
+        vlan-tagging;
+        aggregated-ether-options {
+            link-speed 100m;
+            lacp {
+                active;
+            }
+        }
+        unit 708 {
+            vlan-id 708;
+            family inet {
+                address 172.20.0.254/24;
+            }
+            family inet6 {
+                address fd00::254/64;
+            }
+        }
     }
     ae1 {
         description Free;
@@ -540,7 +543,7 @@ routing-options {
             import-rib [ inet.0 tato-untrust.inet.0 ];
         }
     }
-    autonomous-system 65001;
+    autonomous-system 65254;
 }
 protocols {
     igmp {
@@ -1733,6 +1736,7 @@ security {
                             dhcp;
                             ping;
                             traceroute;
+                            ssh;
                         }
                         protocols {
                             all;
@@ -1778,6 +1782,19 @@ security {
                 fe-0/0/4.10;
                 fe-0/0/4.7;
                 fe-0/0/4.9;
+                ae0.708 {
+                    host-inbound-traffic {
+                        system-services {
+                            ping;
+                            telnet;
+                            ssh;
+                        }
+                        protocols {
+                            bgp;
+                            bfd;
+                        }
+                    }
+                }
             }
         }
         security-zone untrust-wifi;
@@ -1857,23 +1874,6 @@ security {
                             ping;
                             traceroute;
                             ssh;
-                        }
-                    }
-                }
-            }
-        }
-        security-zone peering-fabric {
-            interfaces {
-                fe-0/0/2.708 {
-                    host-inbound-traffic {
-                        system-services {
-                            ping;
-                            telnet;
-                            ssh;
-                        }
-                        protocols {
-                            bgp;
-                            bfd;
                         }
                     }
                 }
@@ -2042,7 +2042,7 @@ routing-instances {
     vpls1 {
         instance-type vpls;
         vlan-id all;
-        interface fe-0/0/3.0;
+        interface fe-0/0/3.0; ## 'fe-0/0/3.0' is not defined
         route-distinguisher 172.16.0.255:900;
         vrf-target target:65000:900;
         protocols {
