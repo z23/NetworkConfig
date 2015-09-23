@@ -1,4 +1,4 @@
-## Last commit: 2015-09-23 20:25:43 EST by brendanh
+## Last commit: 2015-09-23 22:32:25 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -280,7 +280,7 @@ interfaces {
                 address 172.20.0.254/24;
             }
             family inet6 {
-                address fd00::1/64;
+                address fd00::254/64;
             }
         }
     }
@@ -640,7 +640,7 @@ protocols {
                 peer-as 65253;
             }
             neighbor 172.20.0.252 {
-                import [ IMPORT-NODE IMPORT-TRANSIT ];
+                import [ IMPORT-NODE IMPORT-TRANSIT REJECT-ALL ];
                 peer-as 65252;
             }
             neighbor 172.20.0.1 {
