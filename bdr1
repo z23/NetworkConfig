@@ -1,4 +1,4 @@
-## Last commit: 2015-09-23 14:23:01 EST by dutcheh
+## Last commit: 2015-09-23 20:25:43 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -273,7 +273,16 @@ interfaces {
         }
     }
     fe-0/0/2 {
-        disable;
+        vlan-tagging;
+        unit 708 {
+            vlan-id 708;
+            family inet {
+                address 172.20.0.254/24;
+            }
+            family inet6 {
+                address fd00::1/64;
+            }
+        }
     }
     fe-0/0/3 {
         description "bdr1:fe-0/0/1 (looped)";
@@ -531,7 +540,7 @@ routing-options {
             import-rib [ inet.0 tato-untrust.inet.0 ];
         }
     }
-    autonomous-system 65000;
+    autonomous-system 65001;
 }
 protocols {
     igmp {
@@ -1848,6 +1857,23 @@ security {
                             ping;
                             traceroute;
                             ssh;
+                        }
+                    }
+                }
+            }
+        }
+        security-zone peering-fabric {
+            interfaces {
+                fe-0/0/2.708 {
+                    host-inbound-traffic {
+                        system-services {
+                            ping;
+                            telnet;
+                            ssh;
+                        }
+                        protocols {
+                            bgp;
+                            bfd;
                         }
                     }
                 }
