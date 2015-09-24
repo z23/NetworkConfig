@@ -1,4 +1,4 @@
-## Last commit: 2015-09-24 21:52:34 EST by brendanh
+## Last commit: 2015-09-24 22:57:43 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -192,7 +192,16 @@ interfaces {
                 address 172.23.40.255/31;
             }
         }
-        unit 2;
+        unit 2 {
+            description drnuck;
+            tunnel {
+                source 203.206.134.147;
+                destination 203.59.26.130;
+            }
+            family inet {
+                address 172.23.40.246/31;
+            }
+        }
         unit 3;
         unit 4;
         unit 5;
@@ -440,13 +449,6 @@ interfaces {
     ae7 {
         disable;
     }
-    lo0 {
-        unit 0 {
-            family inet {
-                address 172.16.0.255/32;
-            }
-        }
-    }
     inactive: pp0 {
         unit 0 {
             description "iiNet PPP";
@@ -514,8 +516,8 @@ routing-options {
         route 10.10.10.0/25 next-hop 10.1.1.250;
         inactive: route 37.59.204.199/32 next-hop 192.168.0.249;
         route 172.23.40.0/24 discard;
-        route 150.101.135.3/32 next-hop 192.168.0.249;
-        route 202.158.214.106/32 next-hop 192.168.0.249;
+        inactive: route 150.101.135.3/32 next-hop 192.168.0.249;
+        inactive: route 202.158.214.106/32 next-hop 192.168.0.249;
     }
     generate {
         route 0.0.0.0/0 {
@@ -544,15 +546,6 @@ protocols {
         }
     }
     bgp {
-        inactive: group internal {
-            type internal;
-            local-address 172.16.0.255;
-            family l2vpn {
-                signaling;
-            }
-            neighbor 172.16.0.254;
-            neighbor 172.16.0.253;
-        }
         group ebgp {
             type external;
             neighbor 169.254.247.21 {
@@ -599,10 +592,10 @@ protocols {
         group peering-fabric {
             type external;
             local-address 172.20.0.254;
-            export [ AWS-VPC-DX DEFAULT-ORIGINATE REJECT-ALL ];
+            export [ AWS-VPC-DX EXPORT-CONNECTED DEFAULT-ORIGINATE REJECT-ALL ];
             local-as 65254;
             neighbor 172.20.0.253 {
-                import [ IMPORT-TPG IMPORT-TRANSIT ];
+                import [ IMPORT-TPG IMPORT-TRANSIT REJECT-ALL ];
                 peer-as 65253;
             }
             neighbor 172.20.0.252 {
@@ -610,15 +603,15 @@ protocols {
                 peer-as 65252;
             }
             neighbor 172.20.0.1 {
-                import [ IMPORT-Z23 IMPORT-HOSTLAN ];
+                import [ IMPORT-Z23 IMPORT-HOSTLAN REJECT-ALL ];
                 peer-as 65001;
             }
             neighbor 172.20.0.2 {
-                import [ IMPORT-TATO IMPORT-HOSTLAN ];
+                import [ IMPORT-TATO IMPORT-HOSTLAN REJECT-ALL ];
                 peer-as 65002;
             }
             neighbor 172.20.0.3 {
-                import [ IMPORT-DAVE IMPORT-HOSTLAN ];
+                import [ IMPORT-DAVE IMPORT-HOSTLAN REJECT-ALL ];
                 peer-as 65003;
             }
         }
@@ -712,6 +705,12 @@ policy-options {
             then accept;
         }
     }
+    policy-statement EXPORT-CONNECTED {
+        term 1 {
+            from protocol direct;
+            then accept;
+        }
+    }
     policy-statement EXPORT-DEFAULT {
         term default {
             from {
@@ -748,6 +747,7 @@ policy-options {
             from {
                 route-filter 0.0.0.0/0 prefix-length-range /16-/24;
             }
+            then accept;
         }
     }
     policy-statement IMPORT-HOSTLAN-V6 {
@@ -1688,6 +1688,14 @@ security {
                         }
                     }
                 }
+                gr-0/0/0.2 {
+                    host-inbound-traffic {
+                        system-services {
+                            ping;
+                            traceroute;
+                        }
+                    }
+                }
             }
         }
         security-zone trust {
@@ -1702,7 +1710,6 @@ security {
             }
             interfaces {
                 fe-0/0/1.23;
-                lo0.0;
                 fe-0/0/4.10;
                 fe-0/0/4.7;
                 fe-0/0/4.9;
