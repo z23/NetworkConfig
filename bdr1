@@ -1,4 +1,4 @@
-## Last commit: 2015-09-24 00:29:41 EST by brendanh
+## Last commit: 2015-09-24 20:51:53 EST by dutcheh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -52,18 +52,6 @@ system {
                     10.1.2.254;
                 }
                 propagate-settings fe-0/0/2.0;
-            }
-            pool 10.1.1.0/24 {
-                address-range low 10.1.1.200 high 10.1.1.230;
-                name-server {
-                    10.1.1.1;
-                    8.8.8.8;
-                    8.8.4.4;
-                }
-                router {
-                    10.1.1.254;
-                }
-                propagate-settings fe-0/0/1.23;
             }
             pool 10.1.15.0/24 {
                 address-range low 10.1.15.200 high 10.1.15.230;
@@ -426,7 +414,7 @@ interfaces {
             }
         }
         unit 0 {
-            family inet {
+            inactive: family inet {
                 address 192.168.1.254/24 {
                     vrrp-group 1 {
                         virtual-address 192.168.1.7;
@@ -555,31 +543,6 @@ protocols {
             prefix 2001:4479:cbce:8693:10:1:1::/112;
         }
     }
-    rsvp {
-        interface fe-0/0/6.0 {
-            link-protection;
-        }
-    }
-    mpls {
-        explicit-null;
-        no-cspf;
-        label-switched-path srx1-to-srx3 {
-            to 172.16.0.253;
-            link-protection;
-            fast-reroute;
-            primary via-srx3;
-            secondary via-srx2 {
-                standby;
-            }
-        }
-        path via-srx3 {
-            172.16.0.253 loose;
-        }
-        path via-srx2 {
-            192.168.0.254 strict;
-        }
-        interface fe-0/0/6.0;
-    }
     bgp {
         inactive: group internal {
             type internal;
@@ -690,46 +653,6 @@ protocols {
         interface fe-0/0/6.0 {
             level 2 passive;
         }
-    }
-    ospf {
-        export [ DEFAULT-ORIGINATE VPC-REDIST ];
-        area 0.0.0.0 {
-            interface lo0.0;
-            interface fe-0/0/6.0;
-            interface fe-0/0/1.23 {
-                passive;
-            }
-            interface ae2.5;
-            interface fe-0/0/2.0 {
-                passive;
-            }
-            interface fe-0/0/4.7 {
-                passive;
-            }
-            interface fe-0/0/4.10 {
-                passive;
-            }
-            interface fe-0/0/4.9 {
-                passive;
-            }
-            interface ae3.0;
-        }
-        inactive: area 0.0.0.23 {
-            interface ip-0/0/0.1;
-            interface gr-0/0/0.0;
-        }
-    }
-    ospf3 {
-        export EXPORT-DEFAULT-6;
-        area 0.0.0.0 {
-            interface ae2.5;
-            interface fe-0/0/1.23 {
-                passive;
-            }
-        }
-    }
-    ldp {
-        interface fe-0/0/6.0;
     }
     neighbor-discovery;
     lldp {
@@ -1259,15 +1182,6 @@ security {
                     }
                     then {
                         destination-nat pool box1prd;
-                    }
-                }
-                inactive: rule box1prd-ssh-80 {
-                    match {
-                        destination-address 203.59.237.113/32;
-                        destination-port 80;
-                    }
-                    then {
-                        destination-nat pool box1prd-ssh;
                     }
                 }
                 rule nms-80 {
@@ -1923,7 +1837,7 @@ firewall {
                     }
                 }
                 then {
-                    routing-instance tpg;
+                    routing-instance tpg; ## 'tpg' is not defined
                 }
             }
         }
@@ -1946,7 +1860,7 @@ firewall {
                     }
                 }
                 then {
-                    routing-instance tpg;
+                    routing-instance tpg; ## 'tpg' is not defined
                 }
             }
             term default {
@@ -2015,45 +1929,6 @@ inactive: access {
                         2001:4479:cbce:8693:10:1:1:1;
                     }
                 }
-            }
-        }
-    }
-}
-routing-instances {
-    tato-untrust {
-        instance-type virtual-router;
-        interface ae2.6;
-        protocols {
-            ospf {
-                area 0.0.0.0 {
-                    interface ae2.6;
-                }
-            }
-        }
-    }
-    tpg {
-        instance-type forwarding;
-        routing-options {
-            static {
-                route 0.0.0.0/0 next-hop 192.168.0.249;
-            }
-        }
-    }
-    vpls1 {
-        instance-type vpls;
-        vlan-id all;
-        interface fe-0/0/3.0; ## 'fe-0/0/3.0' is not defined
-        route-distinguisher 172.16.0.255:900;
-        vrf-target target:65000:900;
-        protocols {
-            vpls {
-                site-range 255;
-                no-tunnel-services;
-                site bdr1 {
-                    site-identifier 255;
-                    interface fe-0/0/3.0;
-                }
-                connectivity-type permanent;
             }
         }
     }
