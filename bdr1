@@ -1,4 +1,4 @@
-## Last commit: 2015-09-24 20:51:53 EST by dutcheh
+## Last commit: 2015-09-24 21:52:34 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -1101,13 +1101,23 @@ security {
                 }
                 rule nat {
                     match {
-                        source-address 0.0.0.0/0;
+                        source-address 10.1.1.0/24;
                     }
                     then {
                         source-nat {
                             pool {
                                 nat1-z23-ca;
                             }
+                        }
+                    }
+                }
+                rule catch-all {
+                    match {
+                        source-address 0.0.0.0/0;
+                    }
+                    then {
+                        source-nat {
+                            interface;
                         }
                     }
                 }
