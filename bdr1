@@ -1,4 +1,4 @@
-## Last commit: 2015-09-25 22:18:03 EST by brendanh
+## Last commit: 2015-09-25 23:19:38 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -501,6 +501,10 @@ routing-options {
         route 172.23.40.0/24 discard;
         inactive: route 150.101.135.3/32 next-hop 192.168.0.249;
         inactive: route 202.158.214.106/32 next-hop 192.168.0.249;
+        route 10.254.254.0/24 {
+            discard;
+            preference 255;
+        }
     }
     generate {
         route 0.0.0.0/0 {
@@ -567,7 +571,7 @@ protocols {
         group peering-fabric {
             type external;
             local-address 172.20.0.254;
-            export [ AWS-VPC-DX EXPORT-CONNECTED DEFAULT-ORIGINATE REJECT-ALL ];
+            export [ AWS-VPC-DX EXPORT-CONNECTED DEFAULT-ORIGINATE EXPORT-STATIC REJECT-ALL ];
             local-as 65254;
             neighbor 172.20.0.253 {
                 import [ IMPORT-TPG IMPORT-TRANSIT REJECT-ALL ];
@@ -703,6 +707,15 @@ policy-options {
                 protocol static;
                 rib inet6.0;
                 route-filter ::/0 exact;
+            }
+            then accept;
+        }
+    }
+    policy-statement EXPORT-STATIC {
+        term 1 {
+            from {
+                protocol static;
+                route-filter 10.254.254.0/24 exact;
             }
             then accept;
         }
@@ -1144,6 +1157,9 @@ security {
             pool nf-proxy {
                 address 52.88.160.233/32;
             }
+            pool dnat-37-59-204-199 {
+                address 37.59.204.199/32;
+            }
             rule-set destination_nat_rules {
                 from zone internet;
                 rule box1prd-ssh {
@@ -1210,7 +1226,7 @@ security {
                     }
                 }
             }
-            rule-set outbound-dnat-secure9 {
+            rule-set outbound-dnat {
                 from zone trust;
                 rule dns-override {
                     match {
@@ -1220,6 +1236,14 @@ security {
                     }
                     then {
                         destination-nat pool nf-proxy;
+                    }
+                }
+                rule lb1 {
+                    match {
+                        destination-address 10.254.254.1/32;
+                    }
+                    then {
+                        destination-nat pool dnat-37-59-204-199;
                     }
                 }
             }
