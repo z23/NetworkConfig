@@ -1,4 +1,4 @@
-## Last commit: 2015-09-24 22:57:43 EST by brendanh
+## Last commit: 2015-09-25 21:46:55 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -42,17 +42,6 @@ system {
             }
         }
         dhcp {
-            inactive: pool 10.1.2.0/24 {
-                address-range low 10.1.2.200 high 10.1.2.230;
-                name-server {
-                    8.8.8.8;
-                    8.8.4.4;
-                }
-                router {
-                    10.1.2.254;
-                }
-                propagate-settings fe-0/0/2.0;
-            }
             pool 10.1.15.0/24 {
                 address-range low 10.1.15.200 high 10.1.15.230;
                 domain-name honeypot;
@@ -257,9 +246,6 @@ interfaces {
                     preferred;
                 }
                 address 10.1.1.100/24;
-            }
-            family inet6 {
-                address 2001:4479:cbce:8693:10:1:1:254/112;
             }
         }
         unit 33 {
@@ -1101,7 +1087,7 @@ security {
                 }
                 rule nat {
                     match {
-                        source-address 10.1.1.0/24;
+                        source-address [ 10.1.1.0/24 10.1.9.0/24 ];
                     }
                     then {
                         source-nat {
@@ -1114,20 +1100,6 @@ security {
                 rule catch-all {
                     match {
                         source-address 0.0.0.0/0;
-                    }
-                    then {
-                        source-nat {
-                            interface;
-                        }
-                    }
-                }
-            }
-            rule-set untrust-wifi-to-internet {
-                from zone untrust-wifi;
-                to zone internet;
-                rule default {
-                    match {
-                        source-address 10.1.2.0/24;
                     }
                     then {
                         source-nat {
