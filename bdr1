@@ -1,4 +1,4 @@
-## Last commit: 2015-09-25 21:46:55 EST by brendanh
+## Last commit: 2015-09-25 22:18:03 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -490,9 +490,6 @@ snmp {
     }
 }
 routing-options {
-    interface-routes {
-        rib-group inet tpg;
-    }
     rib inet6.0 {
         static {
             route ::/0 next-hop ip-0/0/0.0;
@@ -509,14 +506,6 @@ routing-options {
         route 0.0.0.0/0 {
             preference 255;
             discard;
-        }
-    }
-    rib-groups {
-        tpg {
-            import-rib [ inet.0 tpg.inet.0 ];
-        }
-        tato-untrust {
-            import-rib [ inet.0 tato-untrust.inet.0 ];
         }
     }
     autonomous-system 65254;
