@@ -1,4 +1,4 @@
-## Last commit: 2015-09-26 13:20:08 EST by brendanh
+## Last commit: 2015-09-27 18:31:35 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -1645,7 +1645,6 @@ security {
                             dhcp;
                             ping;
                             traceroute;
-                            ssh;
                         }
                         protocols {
                             all;
