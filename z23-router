@@ -21,8 +21,8 @@ pass out on $ext_if
 
 pass in on $ext_if inet proto icmp
 pass in on $ext_if inet6 proto icmp6
-pass in on $ext_if inet proto tcp from any to $box1prd port 22 
-pass in on $ext_if inet proto tcp from any to $nms port 80
+pass in on { $ext_if $tato_if } inet proto tcp from any to $box1prd port 22 
+pass in on { $ext_if $tato_if } inet proto tcp from any to $nms port 80
 
 pass out on $int_if to $lan_net
 pass in quick on $int_if from $lan_net to $int_if
