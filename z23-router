@@ -1,0 +1,39 @@
+lan_net	= "{ 10.1.1.0/24, 2001:4479:cbce:8693:10:1:1::/112 }"
+tato_net	= "{ 10.1.3.0/24, 2001:4479:cbce:8693:10:1:3::/112 }"
+int_if = "vlan0"
+ext_if = "vlan1"
+tato_if = "vlan2"
+iinet	= "172.20.0.254"
+tpg	= "172.20.0.253"
+node 	= "172.20.0.252"
+box1prd = "10.1.1.1"
+nms	= "10.1.1.2"
+lb	= "37.59.204.199/32"
+dont_lb = "209.68.27.16"
+
+set skip on lo
+
+block in
+block out
+
+pass in on $int_if
+pass out on $ext_if
+
+pass in on $ext_if inet proto icmp
+pass in on $ext_if inet6 proto icmp6
+pass in on $ext_if inet proto tcp from any to $box1prd port 22 
+pass in on $ext_if inet proto tcp from any to $nms port 80
+
+pass out on $int_if to $lan_net
+pass in quick on $int_if from $lan_net to $int_if
+
+pass in on $int_if to $lb \
+	route-to { ($ext_if $iinet), ($ext_if $tpg), ($ext_if $node) } \
+	round-robin
+
+
+pass in quick on $tato_if to $dont_lb route-to ($ext_if $tpg)
+
+pass in on $tato_if to any \
+        route-to { ($ext_if $iinet), ($ext_if $tpg), ($ext_if $node) } \
+        round-robin
