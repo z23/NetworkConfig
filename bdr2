@@ -1,4 +1,4 @@
-## Last commit: 2015-09-27 23:42:27 EST by root
+## Last commit: 2015-09-28 18:35:46 EST by root
 version 12.1X44-D50.2;
 system {
     host-name tato;
@@ -106,10 +106,7 @@ interfaces {
         description "trunk port -> sw1 ge-0/0/24";
         unit 0 {
             family ethernet-switching {
-                port-mode trunk;
-                vlan {
-                    members vlan-4;
-                }
+                port-mode access;
             }
         }
     }
