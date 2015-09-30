@@ -1,4 +1,4 @@
-## Last commit: 2015-09-30 20:04:02 EST by brendanh
+## Last commit: 2015-09-30 20:36:19 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -189,6 +189,9 @@ interfaces {
             }
             family inet {
                 address 172.23.40.246/31;
+            }
+            family inet6 {
+                address fd00:1::254/64;
             }
         }
         unit 3;
@@ -626,6 +629,14 @@ protocols {
             export [ AWS-VPC-DX EXPORT-CONNECTED DEFAULT-ORIGINATE EXPORT-STATIC ];
             local-as 65254;
             neighbor 172.23.40.247 {
+                peer-as 65256;
+            }
+        }
+        group drnuck-v6 {
+            type external;
+            export EXPORT-DEFAULT-6;
+            local-as 65254;
+            neighbor fd00:1::256 {
                 peer-as 65256;
             }
         }
