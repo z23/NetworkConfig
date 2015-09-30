@@ -1,4 +1,4 @@
-## Last commit: 2015-09-29 16:55:21 EST by brendanh
+## Last commit: 2015-09-30 09:51:19 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -622,8 +622,7 @@ protocols {
         }
         group drnuck {
             type external;
-            import REJECT-ALL;
-            export REJECT-ALL;
+            import IMPORT-DRNUCK;
             local-as 65254;
             neighbor 172.23.40.247 {
                 peer-as 65256;
@@ -737,6 +736,14 @@ policy-options {
     policy-statement IMPORT-DAVE-V6 {
         term 1 {
             then next policy;
+        }
+    }
+    policy-statement IMPORT-DRNUCK {
+        term 1 {
+            from {
+                route-filter 100.64.0.0/10 prefix-length-range /10-/32;
+            }
+            then accept;
         }
     }
     policy-statement IMPORT-HOSTLAN {
