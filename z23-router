@@ -30,7 +30,6 @@ pass in quick on $int_if from $lan_net to $int_if
 pass in quick on $tato_if inet proto tcp from $tato_net to $tato_if port 22
 
 pass in on $int_if to $lb \
-#	route-to { ($ext_if $iinet), ($ext_if $tpg), ($ext_if $node) } \
 	route-to { ($ext_if $iinet), ($ext_if $tpg) } \
 	round-robin
 
