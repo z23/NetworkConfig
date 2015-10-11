@@ -33,6 +33,7 @@ pass in on $int_if to $lb \
 	route-to { ($ext_if $iinet), ($ext_if $tpg) } \
 	round-robin
 
+pass in quick on $int_if to 203.39.44.45 route-to { ($ext_if $iinet), ($ext_if $tpg), ($ext_if $node) } round-robin
 
 pass in quick on $tato_if to $dont_lb route-to ($ext_if $tpg)
 
