@@ -1,4 +1,4 @@
-## Last commit: 2015-09-30 20:36:19 EST by brendanh
+## Last commit: 2015-10-15 16:37:14 EST by dutcheh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -405,6 +405,7 @@ interfaces {
     }
     ae3 {
         description "daves microserver";
+        disable;
         aggregated-ether-options {
             minimum-links 1;
             lacp {
