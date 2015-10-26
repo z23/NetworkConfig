@@ -3,6 +3,7 @@ tato_net	= "{ 10.1.3.0/24, 2001:4479:cbce:8693:10:1:3::/112 }"
 int_if = "vlan0"
 ext_if = "vlan1"
 tato_if = "vlan2"
+carp_dev = "vlan22"
 iinet	= "172.20.0.254"
 tpg	= "172.20.0.253"
 node 	= "172.20.0.252"
@@ -18,6 +19,9 @@ block out
 
 pass in on $int_if
 pass out on $ext_if
+
+pass in on $carp_dev proto carp
+pass out on $carp_dev proto carp keep state
 
 pass in quick on $ext_if inet proto icmp
 pass in quick on $ext_if inet6 proto icmp6
