@@ -1,4 +1,4 @@
-## Last commit: 2015-10-15 16:37:14 EST by dutcheh
+## Last commit: 2015-10-27 13:02:11 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -517,6 +517,20 @@ routing-options {
         }
     }
     autonomous-system 65254;
+    resolution {
+        rib inet.0 {
+            import IPV4-RESTRICT-NH-RECURSION;
+        }
+        rib inet.3 {
+            import IPV4-RESTRICT-NH-RECURSION;
+        }
+        rib inet6.0 {
+            import IPV6-RESTRICT-NH-RECURSION;
+        }
+        rib inet6.3 {
+            import IPV6-RESTRICT-NH-RECURSION;
+        }
+    }
 }
 protocols {
     igmp {
@@ -835,6 +849,36 @@ policy-options {
     policy-statement IMPORT-Z23-V6 {
         term 1 {
             then next policy;
+        }
+    }
+    policy-statement IPV4-RESTRICT-NH-RECURSION {
+        term ACCEPT-DIRECTLY-CONNECTED-ROUTES {
+            from protocol direct;
+            then accept;
+        }
+        term ACCEPT-IPV4-SLASH-30-OR-LONGER-ROUTES {
+            from {
+                route-filter 0.0.0.0/0 prefix-length-range /30-/32;
+            }
+            then accept;
+        }
+        term REJECT-ALL {
+            then reject;
+        }
+    }
+    policy-statement IPV6-RESTRICT-NH-RECURSION {
+        term ACCEPT-DIRECTLY-CONNECTED-ROUTES {
+            from protocol direct;
+            then accept;
+        }
+        term ACCEPT-IPV6-SLASH-126-OR-LONGER-ROUTES {
+            from {
+                route-filter 0::/0 prefix-length-range /126-/128;
+            }
+            then accept;
+        }
+        term REJECT-ALL {
+            then reject;
         }
     }
     policy-statement REJECT-ALL {
