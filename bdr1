@@ -1,4 +1,4 @@
-## Last commit: 2015-11-17 20:22:44 EST by brendanh
+## Last commit: 2015-11-17 22:39:02 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -1015,7 +1015,7 @@ security {
             address xbox 10.1.1.36/32;
             address core1-z23-ca 203.59.237.112/32;
             address esx-z23-ca 203.59.237.115/32;
-            address z23-ca 203.59.237.114/32;
+            address z23-ca 203.59.237.115/32;
             address games-dmz 10.1.1.222/32;
             address nat1-z23-ca 203.59.237.113/32;
             address box1prd 10.1.1.1/32;
@@ -1489,8 +1489,18 @@ security {
             policy port80 {
                 match {
                     source-address any-ipv4;
-                    destination-address [ nms z23-router ];
+                    destination-address [ nms z23-router box1prd ];
                     application junos-http;
+                }
+                then {
+                    permit;
+                }
+            }
+            policy port443 {
+                match {
+                    source-address any-ipv4;
+                    destination-address box1prd;
+                    application junos-https;
                 }
                 then {
                     permit;
