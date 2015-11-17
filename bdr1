@@ -1,4 +1,4 @@
-## Last commit: 2015-10-27 13:19:11 EST by brendanh
+## Last commit: 2015-11-17 20:22:44 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -1305,6 +1305,24 @@ security {
                     }
                     then {
                         destination-nat pool dave-microserver;
+                    }
+                }
+                rule box1prd-z23-443 {
+                    match {
+                        destination-address 203.59.237.115/32;
+                        destination-port 80;
+                    }
+                    then {
+                        destination-nat pool box1prd;
+                    }
+                }
+                rule box1prd-z23-80 {
+                    match {
+                        destination-address 203.59.237.115/32;
+                        destination-port 443;
+                    }
+                    then {
+                        destination-nat pool box1prd;
                     }
                 }
             }
