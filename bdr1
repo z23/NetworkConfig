@@ -1,4 +1,4 @@
-## Last commit: 2015-11-17 22:39:02 EST by brendanh
+## Last commit: 2015-11-26 20:20:16 EST by dutcheh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -764,6 +764,12 @@ policy-options {
         }
     }
     policy-statement IMPORT-DAVE {
+        term 0 {
+            from {
+                route-filter 150.101.200.216/29 exact;
+            }
+            then accept;
+        }
         term 1 {
             then next policy;
         }
