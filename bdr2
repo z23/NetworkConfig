@@ -1,4 +1,4 @@
-## Last commit: 2015-12-29 13:33:50 EST by dutcheh
+## Last commit: 2015-12-29 15:00:09 EST by dutcheh
 version 12.1X44-D50.2;
 system {
     host-name tato;
@@ -448,7 +448,7 @@ security {
                 address 37.59.204.199/32;
             }
             pool dutcheh-pcv4-vlc {
-                address 192.168.1.10/32 port 8080;
+                address 150.101.200.219/32 port 8080;
             }
             rule-set outbound-dnat {
                 from zone trust;
@@ -605,7 +605,7 @@ security {
                 address brendanh-trust-vlan 10.1.1.0/24;
                 address 172.20.0.0/24 172.20.0.0/24;
                 address 10.0.0.0/8 10.0.0.0/8;
-                address dutcheh-pcv4 192.168.1.10/32;
+                address dutcheh-pcv4 150.101.200.219/32;
             }
             host-inbound-traffic {
                 system-services {
