@@ -1,4 +1,4 @@
-## Last commit: 2015-09-28 18:35:46 EST by root
+## Last commit: 2015-12-29 13:33:50 EST by dutcheh
 version 12.1X44-D50.2;
 system {
     host-name tato;
@@ -447,6 +447,9 @@ security {
             pool dnat-37-59-204-199 {
                 address 37.59.204.199/32;
             }
+            pool dutcheh-pcv4-vlc {
+                address 192.168.1.10/32 port 8080;
+            }
             rule-set outbound-dnat {
                 from zone trust;
                 rule lb1 {
@@ -455,6 +458,19 @@ security {
                     }
                     then {
                         destination-nat pool dnat-37-59-204-199;
+                    }
+                }
+            }
+            rule-set inbound-portfwd {
+                from zone internet;
+                rule 1 {
+                    match {
+                        source-address 0.0.0.0/0;
+                        destination-address 0.0.0.0/0;
+                        destination-port 8080;
+                    }
+                    then {
+                        destination-nat pool dutcheh-pcv4-vlc;
                     }
                 }
             }
@@ -569,6 +585,18 @@ security {
                 }
             }
         }
+        from-zone internet to-zone trust {
+            policy internet-to-trust {
+                match {
+                    source-address gstaff;
+                    destination-address dutcheh-pcv4;
+                    application dutcheh-vlc;
+                }
+                then {
+                    permit;
+                }
+            }
+        }
     }
     zones {
         security-zone trust {
@@ -577,6 +605,7 @@ security {
                 address brendanh-trust-vlan 10.1.1.0/24;
                 address 172.20.0.0/24 172.20.0.0/24;
                 address 10.0.0.0/8 10.0.0.0/8;
+                address dutcheh-pcv4 192.168.1.10/32;
             }
             host-inbound-traffic {
                 system-services {
@@ -639,6 +668,9 @@ security {
             }
         }
         security-zone internet {
+            address-book {
+                address gstaff 74.125.56.208/29;
+            }
             screen untrust-screen;
             host-inbound-traffic {
                 system-services {
@@ -685,6 +717,10 @@ applications {
     application snmp {
         protocol udp;
         destination-port 161;
+    }
+    application dutcheh-vlc {
+        protocol tcp;
+        destination-port 8080;
     }
 }
 vlans {
