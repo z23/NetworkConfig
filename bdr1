@@ -1,4 +1,4 @@
-## Last commit: 2016-04-20 15:53:02 EST by brendanh
+## Last commit: 2016-04-20 22:04:32 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -225,7 +225,15 @@ interfaces {
                 address 172.23.40.253/31;
             }
         }
-        unit 2;
+        unit 2 {
+            tunnel {
+                source 203.206.134.147;
+                destination 66.220.18.42;
+            }
+            family inet6 {
+                address 2001:470:c:a83::2/64;
+            }
+        }
         unit 3;
         unit 4;
         unit 5;
@@ -321,17 +329,6 @@ interfaces {
         description "ae3 - Dutcheh - ge-0/0/9";
         fastether-options {
             802.3ad ae3;
-        }
-    }
-    ip-0/1/0 {
-        unit 0 {
-            tunnel {
-                source 203.206.134.147;
-                destination 66.220.18.42;
-            }
-            family inet6 {
-                address 2001:470:c:a83::2/64;
-            }
         }
     }
     inactive: at-1/0/0 {
@@ -508,6 +505,8 @@ routing-options {
     rib inet6.0 {
         static {
             route ::/0 next-hop ip-0/0/0.0;
+            route 2001:728:1808::25/128 next-hop 2001:470:c:a83::1;
+            route 2001:4088:126::4/128 next-hop 2001:470:c:a83::1;
         }
     }
     static {
@@ -1199,6 +1198,16 @@ security {
                         }
                     }
                 }
+                rule nat6 {
+                    match {
+                        destination-address [ 2001:4088:126::4/128 2001:728:1808::25/128 ];
+                    }
+                    then {
+                        source-nat {
+                            interface;
+                        }
+                    }
+                }
                 rule catch-all {
                     match {
                         source-address 0.0.0.0/0;
@@ -1808,6 +1817,7 @@ security {
                         }
                     }
                 }
+                ip-0/0/0.2;
             }
         }
         security-zone trust {
