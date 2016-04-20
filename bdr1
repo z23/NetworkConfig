@@ -1,4 +1,4 @@
-## Last commit: 2016-04-20 22:04:32 EST by brendanh
+## Last commit: 2016-04-20 22:35:26 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -1198,7 +1198,7 @@ security {
                         }
                     }
                 }
-                rule nat6 {
+                inactive: rule nat6 {
                     match {
                         destination-address [ 2001:4088:126::4/128 2001:728:1808::25/128 ];
                     }
@@ -1817,7 +1817,16 @@ security {
                         }
                     }
                 }
-                ip-0/0/0.2;
+                ip-0/0/0.2 {
+                    host-inbound-traffic {
+                        system-services {
+                            all;
+                        }
+                        protocols {
+                            all;
+                        }
+                    }
+                }
             }
         }
         security-zone trust {
