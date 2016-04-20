@@ -1,4 +1,4 @@
-## Last commit: 2016-03-21 22:41:55 EST by brendanh
+## Last commit: 2016-04-20 15:53:02 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -321,6 +321,17 @@ interfaces {
         description "ae3 - Dutcheh - ge-0/0/9";
         fastether-options {
             802.3ad ae3;
+        }
+    }
+    ip-0/1/0 {
+        unit 0 {
+            tunnel {
+                source 203.206.134.147;
+                destination 66.220.18.42;
+            }
+            family inet6 {
+                address 2001:470:c:a83::2/64;
+            }
         }
     }
     inactive: at-1/0/0 {
