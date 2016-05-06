@@ -41,10 +41,10 @@ pass in quick on $tato_if inet proto tcp from $tato_net to $tato_if port 22
 pass in on $int_if to $lb route-to { ($ext_if $iinet), ($ext_if $tpg) } round-robin
 pass in on $int_if to $lb_all route-to { ($ext_if $iinet), ($ext_if $tpg), ($ext_if $node) } round-robin
 
-pass in quick on $int_if to 203.39.44.45 route-to { ($ext_if $iinet), ($ext_if $tpg), ($ext_if $node) } round-robin
+#pass in quick on $int_if to 203.39.44.45 route-to { ($ext_if $iinet), ($ext_if $tpg), ($ext_if $node) } round-robin
 
 pass in quick on $tato_if to $dont_lb route-to ($ext_if $tpg)
 
 pass in on $tato_if to any \
-        route-to { ($ext_if $iinet), ($ext_if $tpg), ($ext_if $node) } \
+        route-to { ($ext_if $iinet), ($ext_if $tpg)} \
         round-robin
