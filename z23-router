@@ -1,6 +1,6 @@
 lan_net	= "{ 10.1.1.0/24, 2001:4479:cbce:8693:10:1:1::/112 }"
 tato_net	= "{ 10.1.3.0/24, 2001:4479:cbce:8693:10:1:3::/112 }"
-int_if = "vlan0"
+lan_if = "vlan0"
 ext_if = "vlan1"
 tato_if = "vlan2"
 pfsync_if = "vlan22"
@@ -20,11 +20,11 @@ set skip on lo
 block in
 block out
 
-pass in on $int_if
+pass in on $lan_if
 pass out on $ext_if
 
 pass on $pfsync_if proto pfsync
-pass on { $int_if $tato_if } proto carp
+pass on { $lan_if $tato_if } proto carp
 
 pass in quick on $ext_if inet proto icmp
 pass in quick on $ext_if inet6 proto icmp6
@@ -32,19 +32,20 @@ pass in quick on { $ext_if $tato_if } inet proto tcp from any to $ssh_in port 22
 pass in quick on { $ext_if $tato_if } inet proto tcp from any to $nms port 80
 pass in quick on $ext_if inet proto tcp from any to $box1prd port 80
 pass in quick on $ext_if inet proto tcp from any to $box1prd port 443
-pass in quick inet proto tcp from any to $int_if port 80
+pass in quick inet proto tcp from any to $lan_if port 80
 
-pass out on $int_if to $lan_net
-pass in quick on $int_if from $lan_net to $int_if
+pass out on $lan_if to $lan_net
+pass in quick on $lan_if from $lan_net to $lan_if
 pass in quick on $tato_if inet proto tcp from $tato_net to $tato_if port 22
 
-pass in on $int_if to $lb route-to { ($ext_if $iinet), ($ext_if $tpg) } round-robin
-pass in on $int_if to $lb_all route-to { ($ext_if $iinet), ($ext_if $tpg) } round-robin
+pass in on $lan_if to $lb route-to { ($ext_if $iinet), ($ext_if $tpg) } round-robin
+pass in on $lan_if to $lb_all route-to { ($ext_if $iinet), ($ext_if $tpg) } round-robin
 
-pass in quick on $int_if to 203.39.44.45 route-to { ($ext_if $iinet), ($ext_if $tpg) } round-robin
+pass in quick on $lan_if to 203.39.44.45 route-to { ($ext_if $iinet), ($ext_if $tpg) } round-robin
 
 pass in quick on $tato_if to $dont_lb route-to ($ext_if $tpg)
 
 pass in on $tato_if to any \
-        route-to { ($ext_if $iinet), ($ext_if $tpg)} \
-        round-robin
+        route-to { ($ext_if $tpg)}
+#        route-to { ($ext_if $iinet), ($ext_if $tpg)} \
+#        round-robin
