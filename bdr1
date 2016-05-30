@@ -1,4 +1,4 @@
-## Last commit: 2016-04-20 22:35:26 EST by brendanh
+## Last commit: 2016-05-30 16:25:04 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -519,6 +519,10 @@ routing-options {
             discard;
             preference 255;
         }
+        route 172.20.0.200/32 {
+            discard;
+            no-install;
+        }
     }
     generate {
         route 0.0.0.0/0 {
@@ -769,6 +773,13 @@ policy-options {
             from {
                 protocol static;
                 route-filter 10.254.254.0/24 exact;
+            }
+            then accept;
+        }
+        term 2 {
+            from {
+                protocol static;
+                route-filter 172.20.0.200/32 exact;
             }
             then accept;
         }
