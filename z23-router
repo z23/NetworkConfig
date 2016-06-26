@@ -14,6 +14,7 @@ lb	= "{ 37.59.88.73/32 }"
 lb_all	= "{ 150.101.135.3/32, 172.231.203.169/32, 103.10.125.0/24, 103.8.239.0/24 }"
 dont_lb = "209.68.27.16"
 ssh_in  = "{" $box1prd $netscreen "}"
+tato_vpc = "172.31.0.0/16"
 
 set skip on lo
 
@@ -25,6 +26,9 @@ pass out on $ext_if
 
 pass on $pfsync_if proto pfsync
 pass on { $lan_if $tato_if } proto carp
+
+pass in quick on $ext_if from $tato_vpc to $tato_net
+pass out quick on $tato_if from $tato_vpc to $tato_net
 
 pass in quick on $ext_if inet proto icmp
 pass in quick on $ext_if inet6 proto icmp6
