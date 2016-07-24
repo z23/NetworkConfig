@@ -1,4 +1,4 @@
-## Last commit: 2016-06-26 12:19:49 EST by brendanh
+## Last commit: 2016-07-24 13:52:16 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -242,30 +242,6 @@ interfaces {
         unit 8;
         unit 9;
     }
-    fe-0/0/1 {
-        description core1:ge-0/1/0;
-        vlan-tagging;
-        unit 23 {
-            description "Host LAN";
-            vlan-id 23;
-            family inet {
-                filter {
-                    input tpg-policy;
-                }
-                address 10.1.1.254/24 {
-                    primary;
-                    preferred;
-                }
-                address 10.1.1.100/24;
-            }
-        }
-        unit 33 {
-            vlan-id 33;
-        }
-        unit 43 {
-            vlan-id 43;
-        }
-    }
     fe-0/0/2 {
         description "peering-fabric #1";
         fastether-options {
@@ -313,24 +289,6 @@ interfaces {
             }
         }
     }
-    fe-0/0/5 {
-        description cor1:fe-0/0/5;
-        fastether-options {
-            802.3ad ae2;
-        }
-    }
-    fe-0/0/6 {
-        description "ae3 - Dutcheh - ge-0/0/8";
-        fastether-options {
-            802.3ad ae3;
-        }
-    }
-    fe-0/0/7 {
-        description "ae3 - Dutcheh - ge-0/0/9";
-        fastether-options {
-            802.3ad ae3;
-        }
-    }
     inactive: at-1/0/0 {
         description "iiNet DSL";
         mtu 1540;
@@ -374,64 +332,6 @@ interfaces {
             }
             family inet6 {
                 address fd00::254/64;
-            }
-        }
-    }
-    ae1 {
-        description Free;
-        disable;
-    }
-    ae2 {
-        description "2x100M LAG to tato's SRX";
-        vlan-tagging;
-        aggregated-ether-options {
-            link-speed 100m;
-            lacp {
-                active;
-            }
-        }
-        unit 5 {
-            description "Tato LAN";
-            vlan-id 5;
-            family inet {
-                address 192.168.0.248/31;
-            }
-            family inet6 {
-                address 2001:4479:cbce:8693:192:168:0:248/127;
-            }
-        }
-        unit 6 {
-            description "Tato LAN - untrust";
-            vlan-id 6;
-            family inet {
-                address 192.168.0.246/31;
-            }
-            family inet6 {
-                address 2001:4479:cbce:8693:192:168:0:246/127;
-            }
-        }
-    }
-    ae3 {
-        description "daves microserver";
-        disable;
-        aggregated-ether-options {
-            minimum-links 1;
-            lacp {
-                active;
-            }
-        }
-        unit 0 {
-            inactive: family inet {
-                address 192.168.1.254/24 {
-                    vrrp-group 1 {
-                        virtual-address 192.168.1.7;
-                        priority 110;
-                        preempt;
-                        track {
-                            route 0.0.0.0/0 routing-instance default priority-cost 50;
-                        }
-                    }
-                }
             }
         }
     }
@@ -1245,22 +1145,6 @@ security {
                     }
                 }
             }
-            rule-set dave-to-internet {
-                from zone dave;
-                to zone internet;
-                rule dave-default {
-                    match {
-                        source-address [ 192.168.1.0/24 10.1.15.0/24 ];
-                    }
-                    then {
-                        source-nat {
-                            pool {
-                                justapipe-net;
-                            }
-                        }
-                    }
-                }
-            }
         }
         destination {
             pool box1prd {
@@ -1302,51 +1186,6 @@ security {
                     }
                     then {
                         destination-nat pool nms-80;
-                    }
-                }
-                rule dave-25 {
-                    match {
-                        destination-address 203.59.237.112/32;
-                        destination-port 25;
-                    }
-                    then {
-                        destination-nat pool dave-microserver;
-                    }
-                }
-                rule dave-465 {
-                    match {
-                        destination-address 203.59.237.112/32;
-                        destination-port 465;
-                    }
-                    then {
-                        destination-nat pool dave-microserver;
-                    }
-                }
-                rule dave-587 {
-                    match {
-                        destination-address 203.59.237.112/32;
-                        destination-port 587;
-                    }
-                    then {
-                        destination-nat pool dave-microserver;
-                    }
-                }
-                rule dave-993 {
-                    match {
-                        destination-address 203.59.237.112/32;
-                        destination-port 993;
-                    }
-                    then {
-                        destination-nat pool dave-microserver;
-                    }
-                }
-                rule dave-122 {
-                    match {
-                        destination-address 203.59.237.112/32;
-                        destination-port 122;
-                    }
-                    then {
-                        destination-nat pool dave-microserver;
                     }
                 }
                 rule box1prd-z23-443 {
@@ -1724,76 +1563,6 @@ security {
                 }
             }
         }
-        from-zone dave to-zone internet {
-            policy dave-default {
-                match {
-                    source-address any;
-                    destination-address any;
-                    application any;
-                }
-                then {
-                    permit;
-                }
-            }
-        }
-        from-zone internet to-zone dave {
-            policy forwarded-ports {
-                match {
-                    source-address any;
-                    destination-address 192.168.1.1/32;
-                    application any;
-                }
-                then {
-                    permit;
-                }
-            }
-        }
-        from-zone dave to-zone dave {
-            policy dave-dave {
-                match {
-                    source-address any;
-                    destination-address any;
-                    application any;
-                }
-                then {
-                    permit;
-                }
-            }
-        }
-        from-zone dave to-zone trust {
-            policy observium {
-                match {
-                    source-address any;
-                    destination-address nms;
-                    application junos-http;
-                }
-                then {
-                    permit;
-                }
-            }
-            policy coresw {
-                match {
-                    source-address any;
-                    destination-address coresw;
-                    application junos-ssh;
-                }
-                then {
-                    permit;
-                }
-            }
-        }
-        from-zone dave to-zone tato {
-            policy dave-default {
-                match {
-                    source-address any;
-                    destination-address any;
-                    application any;
-                }
-                then {
-                    permit;
-                }
-            }
-        }
     }
     zones {
         security-zone internet {
@@ -1863,7 +1632,6 @@ security {
                 }
             }
             interfaces {
-                fe-0/0/1.23;
                 fe-0/0/4.10;
                 fe-0/0/4.7;
                 fe-0/0/4.9;
@@ -1891,20 +1659,6 @@ security {
                 }
             }
             interfaces {
-                ae2.5 {
-                    host-inbound-traffic {
-                        system-services {
-                            ping;
-                            traceroute;
-                            ssh;
-                        }
-                        protocols {
-                            ospf;
-                            ospf3;
-                            ndp;
-                        }
-                    }
-                }
                 st0.1;
                 st0.2;
             }
@@ -1936,32 +1690,6 @@ security {
                 }
                 protocols {
                     ospf;
-                }
-            }
-            interfaces {
-                ae2.6;
-            }
-        }
-        security-zone dave {
-            interfaces {
-                ae3.0 {
-                    host-inbound-traffic {
-                        system-services {
-                            ping;
-                            traceroute;
-                            ssh;
-                        }
-                    }
-                }
-                fe-0/0/4.15 {
-                    host-inbound-traffic {
-                        system-services {
-                            dhcp;
-                            ping;
-                            traceroute;
-                            ssh;
-                        }
-                    }
                 }
             }
         }
