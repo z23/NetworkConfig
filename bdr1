@@ -1,4 +1,4 @@
-## Last commit: 2016-07-24 13:52:16 EST by brendanh
+## Last commit: 2016-07-24 14:28:28 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -430,6 +430,7 @@ routing-options {
             discard;
         }
     }
+    router-id 172.20.0.254;
     autonomous-system 65254;
     resolution {
         rib inet.0 {
