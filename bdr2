@@ -1,4 +1,4 @@
-## Last commit: 2015-12-29 15:00:09 EST by dutcheh
+## Last commit: 2016-07-24 14:28:07 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name tato;
@@ -235,6 +235,7 @@ routing-options {
             preference 255;
         }
     }
+    router-id 172.20.0.253;
     autonomous-system 65253;
 }
 protocols {
