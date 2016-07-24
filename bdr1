@@ -1,4 +1,4 @@
-## Last commit: 2016-07-24 14:28:28 EST by brendanh
+## Last commit: 2016-07-24 16:25:38 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -242,6 +242,10 @@ interfaces {
         unit 8;
         unit 9;
     }
+    fe-0/0/1 {
+        description unused;
+        disable;
+    }
     fe-0/0/2 {
         description "peering-fabric #1";
         fastether-options {
@@ -288,6 +292,18 @@ interfaces {
                 address 10.1.15.254/24;
             }
         }
+    }
+    fe-0/0/5 {
+        description unused;
+        disable;
+    }
+    fe-0/0/6 {
+        description unused;
+        disable;
+    }
+    fe-0/0/7 {
+        description unused;
+        disable;
     }
     inactive: at-1/0/0 {
         description "iiNet DSL";
@@ -510,7 +526,7 @@ protocols {
                 import [ IMPORT-TPG IMPORT-TRANSIT REJECT-ALL ];
                 peer-as 65253;
             }
-            neighbor 172.20.0.252 {
+            inactive: neighbor 172.20.0.252 {
                 import [ IMPORT-NODE IMPORT-TRANSIT REJECT-ALL ];
                 peer-as 65252;
             }
@@ -518,11 +534,11 @@ protocols {
                 import [ IMPORT-Z23 IMPORT-HOSTLAN REJECT-ALL ];
                 peer-as 65001;
             }
-            neighbor 172.20.0.2 {
+            inactive: neighbor 172.20.0.2 {
                 import [ IMPORT-TATO IMPORT-HOSTLAN REJECT-ALL ];
                 peer-as 65002;
             }
-            neighbor 172.20.0.3 {
+            inactive: neighbor 172.20.0.3 {
                 import [ IMPORT-DAVE IMPORT-HOSTLAN REJECT-ALL ];
                 peer-as 65003;
             }
@@ -536,7 +552,7 @@ protocols {
                 import [ IMPORT-TPG-V6 IMPORT-TRANSIT-V6 ];
                 peer-as 65253;
             }
-            neighbor fd00::252 {
+            inactive: neighbor fd00::252 {
                 import [ IMPORT-NODE-V6 IMPORT-TRANSIT-V6 ];
                 peer-as 65252;
             }
@@ -544,11 +560,11 @@ protocols {
                 import [ IMPORT-Z23-V6 IMPORT-HOSTLAN-V6 ];
                 peer-as 65001;
             }
-            neighbor fd00::2 {
+            inactive: neighbor fd00::2 {
                 import [ IMPORT-TATO-V6 IMPORT-HOSTLAN-V6 ];
                 peer-as 65002;
             }
-            neighbor fd00::3 {
+            inactive: neighbor fd00::3 {
                 import [ IMPORT-DAVE-V6 IMPORT-HOSTLAN-V6 ];
                 peer-as 65003;
             }
