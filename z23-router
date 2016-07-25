@@ -52,5 +52,7 @@ pass in quick on $tato_if to $dont_lb route-to ($ext_if $tpg)
 
 pass in on $tato_if to any \
         route-to { ($ext_if $tpg)}
-#        route-to { ($ext_if $iinet), ($ext_if $tpg)} \
-#        round-robin
+
+pass in on $tato_if from 10.1.3.101 to any \
+        route-to { ($ext_if $iinet), ($ext_if $tpg)} \
+        round-robin
