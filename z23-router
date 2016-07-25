@@ -1,6 +1,7 @@
 set limit { states 1000000, frags 5000, src-nodes 100000, tables 1000000, table-entries 1000000 }
 lan_net	= "{ 10.1.1.0/24, 2001:4479:cbce:8693:10:1:1::/112 }"
 tato_net	= "{ 10.1.3.0/24, 2001:4479:cbce:8693:10:1:3::/112 }"
+z23_wifi_net = "{ 10.1.7.0/24 }"
 lan_if = "vlan0"
 ext_if = "vlan1"
 tato_if = "vlan2"
@@ -24,6 +25,7 @@ block out
 
 pass in on $lan_if
 pass out on $ext_if
+pass in on $ext_if from $z23_wifi_net
 
 pass on $pfsync_if proto pfsync
 pass on { $lan_if $tato_if } proto carp
