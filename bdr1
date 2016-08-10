@@ -1,4 +1,4 @@
-## Last commit: 2016-08-05 22:04:10 EST by brendanh
+## Last commit: 2016-08-10 13:16:28 EST by brendanh
 version 12.1X44-D50.2;
 system {
     host-name bdr1;
@@ -198,7 +198,7 @@ interfaces {
             description network2501;
             tunnel {
                 source 203.206.134.147;
-                destination 1.1.1.1;
+                destination 203.59.237.64;
             }
             family inet {
                 address 172.23.40.244/31;
@@ -1649,6 +1649,14 @@ security {
                         }
                         protocols {
                             all;
+                        }
+                    }
+                }
+                gr-0/0/0.3 {
+                    host-inbound-traffic {
+                        system-services {
+                            ping;
+                            traceroute;
                         }
                     }
                 }
