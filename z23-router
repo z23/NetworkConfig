@@ -7,14 +7,9 @@ ext_if = "vlan1"
 tato_if = "vlan2"
 pfsync_if = "vlan22"
 iinet	= "172.20.0.254"
-tpg	= "172.20.0.253"
-node 	= "172.20.0.252"
 box1prd = "10.1.1.1"
 nms	= "10.1.1.2"
 netscreen = "10.1.1.103"
-lb	= "{ 37.59.88.73/32 }"
-lb_all	= "{ 150.101.135.3/32, 172.231.203.169/32, 103.10.125.0/24, 103.8.239.0/24 }"
-dont_lb = "209.68.27.16"
 ssh_in  = "{" $box1prd $netscreen "}"
 tato_vpc = "172.31.0.0/16"
 
@@ -24,8 +19,9 @@ block in
 block out
 
 pass in on $lan_if
-pass out on $ext_if
 pass in on $ext_if from $z23_wifi_net
+pass out on $ext_if
+pass out on $tato_if
 
 pass on $pfsync_if proto pfsync
 pass on { $lan_if $tato_if } proto carp
@@ -45,17 +41,4 @@ pass out on $lan_if to $lan_net
 pass in quick on $lan_if from $lan_net to $lan_if
 pass in quick on $tato_if inet proto tcp from $tato_net to $tato_if port 22
 
-pass in on $lan_if to $lb route-to { ($ext_if $iinet), ($ext_if $tpg) } round-robin
-pass in on $lan_if to $lb_all route-to { ($ext_if $iinet), ($ext_if $tpg) } round-robin
-
-#pass in quick on $lan_if from 10.1.1.50 to any route-to ($ext_if $tpg)
-pass in quick on $lan_if to 203.39.44.45 route-to { ($ext_if $iinet), ($ext_if $tpg) } round-robin
-
-pass in quick on $tato_if to $dont_lb route-to ($ext_if $tpg)
-
-pass in on $tato_if to any \
-        route-to { ($ext_if $tpg)}
-
-pass in on $tato_if from 10.1.3.101 to any \
-        route-to { ($ext_if $iinet), ($ext_if $tpg)} \
-        round-robin
+pass in on $tato_if to any
