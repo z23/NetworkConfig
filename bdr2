@@ -1,4 +1,4 @@
-## Last commit: 2016-07-24 14:28:07 EST by brendanh
+## Last commit: 2016-10-15 20:32:59 EST by root
 version 12.1X44-D50.2;
 system {
     host-name tato;
@@ -18,6 +18,12 @@ system {
         }
         user dutcheh {
             uid 2000;
+            class super-user;
+            authentication {
+            }
+        }
+        user mmcallister {
+            uid 2006;
             class super-user;
             authentication {
             }
